@@ -56,8 +56,8 @@ export default function ContactForm() {
   return (
     <Card className="w-full max-w-md mx-auto">
       <CardHeader>
-        <CardTitle>お問い合わせ</CardTitle>
-        <CardDescription>以下のフォームに必要事項を入力してください。</CardDescription>
+        <CardTitle>データ登録</CardTitle>
+        <CardDescription>以下のフォームに情報を入力してください。</CardDescription>
       </CardHeader>
       <CardContent>
         <form onSubmit={handleSubmit} className="space-y-4">
@@ -70,7 +70,7 @@ export default function ContactForm() {
             <Input id="email" name="email" type="email" required />
           </div>
           <div className="space-y-2">
-            <Label htmlFor="message">メッセージ</Label>
+            <Label htmlFor="message">メモ内容</Label>
             <Textarea id="message" name="message" required />
           </div>
           <Button type="submit" className="w-full" disabled={isLoading}>
