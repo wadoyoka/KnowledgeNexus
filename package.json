@@ -9,13 +9,21 @@
     "lint": "next lint"
   },
   "dependencies": {
+    "@radix-ui/react-label": "^2.1.0",
+    "@radix-ui/react-slot": "^1.1.0",
+    "@radix-ui/react-toast": "^1.2.2",
     "@types/firebase": "^2.4.32",
+    "class-variance-authority": "^0.7.1",
     "cloudfunctiontest": "file:",
+    "clsx": "^2.1.1",
     "firebase": "^11.0.2",
     "firebase-admin": "^13.0.1",
+    "lucide-react": "^0.462.0",
     "next": "14.2.17",
     "react": "^18",
-    "react-dom": "^18"
+    "react-dom": "^18",
+    "tailwind-merge": "^2.5.5",
+    "tailwindcss-animate": "^1.0.7"
   },
   "devDependencies": {
     "@types/node": "^20",
