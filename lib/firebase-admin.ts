@@ -1,16 +1,16 @@
-import * as admin from "firebase-admin";
-import { getApps } from 'firebase-admin/app';
+// import * as admin from "firebase-admin";
+// import { getApps } from 'firebase-admin/app';
 
-if (!getApps().length) {
-    const serviceAccount = JSON.parse(
-        Buffer.from(process.env.FIREBASE_SERVICE_ACCOUNT_KEY || '', 'base64').toString()
-    );
+// if (!getApps().length) {
+//     const serviceAccount = JSON.parse(
+//         Buffer.from(process.env.FIREBASE_SERVICE_ACCOUNT_KEY || '', 'base64').toString()
+//     );
 
-    admin.initializeApp({
-        credential: admin.credential.cert(serviceAccount),
-        databaseURL: process.env.FIREBASE_DATABASE_URL
-    });
-}
+//     admin.initializeApp({
+//         credential: admin.credential.cert(serviceAccount),
+//         databaseURL: process.env.FIREBASE_DATABASE_URL
+//     });
+// }
 
-export const adminDb = admin.firestore();
-export const firebaseAdmin = admin;
+// export const adminDb = admin.firestore();
+// export const firebaseAdmin = admin;

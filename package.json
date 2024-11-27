@@ -10,6 +10,7 @@
   },
   "dependencies": {
     "@types/firebase": "^2.4.32",
+    "cloudfunctiontest": "file:",
     "firebase": "^11.0.2",
     "firebase-admin": "^13.0.1",
     "next": "14.2.17",
