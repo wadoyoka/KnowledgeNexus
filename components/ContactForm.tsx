@@ -1,6 +1,5 @@
 'use client'
 
-import { Button } from "@/components/ui/button"
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card"
 import { Input } from "@/components/ui/input"
 import { Label } from "@/components/ui/label"
@@ -8,11 +7,13 @@ import { Textarea } from "@/components/ui/textarea"
 import { useToast } from "@/hooks/use-toast"
 import { useState } from 'react'
 import { callCloudFunction } from '../utils/callCloudFunction'
+import SubmitButton from "./SubmitButton"
 
 
 export default function ContactForm() {
   const [isLoading, setIsLoading] = useState(false)
   const { toast } = useToast()
+
 
   const handleSubmit = async (event: React.FormEvent<HTMLFormElement>) => {
     event.preventDefault()
@@ -50,6 +51,7 @@ export default function ContactForm() {
       })
     } finally {
       setIsLoading(false)
+      
     }
   }
 
@@ -69,13 +71,15 @@ export default function ContactForm() {
             <Label htmlFor="email">メールアドレス</Label>
             <Input id="email" name="email" type="email" required />
           </div>
+          {/* <div className="space-y-2">
+            <Label htmlFor="url">URL</Label>
+            <Input id="url" name="url" required type="url" />
+          </div> */}
           <div className="space-y-2">
             <Label htmlFor="message">メモ内容</Label>
             <Textarea id="message" name="message" required />
           </div>
-          <Button type="submit" className="w-full" disabled={isLoading}>
-            {isLoading ? "送信中..." : "送信"}
-          </Button>
+          <SubmitButton preText={"送信"} postText={"送信中"} disabled={isLoading} width="w-full" />
         </form>
       </CardContent>
     </Card>

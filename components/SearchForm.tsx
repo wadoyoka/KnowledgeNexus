@@ -4,6 +4,7 @@ import { useState } from 'react'
 import { callCloudFunction } from '../utils/callCloudFunction'
 import KnowledgeTable from './KnowledgeTable'
 import SubmitButton from './SubmitButton'
+import { Input } from './ui/input'
 
 
 export function SearchForm() {
@@ -36,6 +37,7 @@ export function SearchForm() {
         setError(response.error || '検索中にエラーが発生しました。')
       }
     } catch (err) {
+      console.error(err)
       setError('検索中にエラーが発生しました。')
     } finally {
       setIsLoading(false);
@@ -45,9 +47,9 @@ export function SearchForm() {
   return (
     <div className="w-screen-[96vw] max-w-screen-xl mx-auto mt-10">
       <form onSubmit={handleSubmit} className="mb-4">
-        <div className="flex items-center border-b border-b-2 border-blue-500 py-2">
-          <input
-            className="appearance-none bg-transparent border-none w-full text-gray-700 mr-3 py-1 px-2 leading-tight focus:outline-none"
+        <div className="flex items-center py-2">
+          <Input
+            className="mr-2"
             type="text"
             placeholder="検索ワードを入力"
             aria-label="検索ワード"
@@ -59,7 +61,7 @@ export function SearchForm() {
       </form>
       {result && (
         <div className="mt-4 p-4 rounded">
-          <h2 className="font-bold text-2xl mb-2">{target!=="" && target}の検索結果</h2>
+          <h2 className="font-bold text-2xl mb-2">{target!=="" && `${target}の検索結果`}</h2>
           <KnowledgeTable knowledges={result} />
         </div>
       )}
