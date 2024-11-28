@@ -5,15 +5,17 @@ import { Input } from "@/components/ui/input"
 import { Label } from "@/components/ui/label"
 import { Textarea } from "@/components/ui/textarea"
 import { useToast } from "@/hooks/use-toast"
+import { Plus } from "lucide-react"
 import { useState } from 'react'
 import { callCloudFunction } from '../utils/callCloudFunction'
 import SubmitButton from "./SubmitButton"
+import { Button } from "./ui/button"
 
 
 export default function ContactForm() {
   const [isLoading, setIsLoading] = useState(false)
   const { toast } = useToast()
-
+  const [urls, setUrls] = useState<string[]>([""]);
 
   const handleSubmit = async (event: React.FormEvent<HTMLFormElement>) => {
     event.preventDefault()
@@ -51,7 +53,7 @@ export default function ContactForm() {
       })
     } finally {
       setIsLoading(false)
-      
+
     }
   }
 
@@ -71,10 +73,17 @@ export default function ContactForm() {
             <Label htmlFor="email">メールアドレス</Label>
             <Input id="email" name="email" type="email" required />
           </div>
-          {/* <div className="space-y-2">
-            <Label htmlFor="url">URL</Label>
-            <Input id="url" name="url" required type="url" />
-          </div> */}
+          <div className="space-y-2">
+            <Label htmlFor="email">URL</Label>
+            {urls.map((url, index) => (
+              <>
+                <Input id="email" name="email" type="email" required />
+                <Button type="button" variant={"ghost"} className="flex mx-auto my-2 bg-slate-100 w-full hover:text-sky-400">
+                  <Plus />
+                </Button>
+              </>
+            ))}
+          </div>
           <div className="space-y-2">
             <Label htmlFor="message">メモ内容</Label>
             <Textarea id="message" name="message" required />
