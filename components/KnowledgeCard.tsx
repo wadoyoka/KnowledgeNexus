@@ -1,4 +1,5 @@
 import { Knowledge } from "@/types/KnowledgeResponse";
+import { JSTTimeDisplay } from "@/utils/JSTTimeDisplay";
 import Link from "next/link";
 import { Card, CardContent, CardHeader, CardTitle } from "./ui/card";
 
@@ -18,13 +19,20 @@ export default function KnowledgeCard({ knowledge }: KnowledgeCardProps) {
     return (
         <Card className="w-screen-[96vw] max-w-screen-xl mb-4">
             <CardHeader>
-                <CardTitle className="font-bold text-xl">{knowledge.name}</CardTitle>
+                <CardTitle className="flex">
+                    <div className="font-bold text-xl">
+                        {knowledge.name}
+                    </div>
+                    <div className="ml-auto text-slate-400 font-light">
+                        {JSTTimeDisplay(knowledge.createdAt)}
+                    </div>
+                </CardTitle>
             </CardHeader>
             <CardContent>
                 <ul className="list-disc pl-4 mb-2">
                     {urls.map(([key, value]) => (
                         <li key={key}>
-                            <Link href={key}  rel="noopener noreferrer" target="_blank" className="text-blue-600 visited:text-purple-600 hover:underline">{value}</Link>
+                            <Link href={key} rel="noopener noreferrer" target="_blank" className="text-blue-600 visited:text-purple-600 hover:underline">{value}</Link>
                         </li>
                     ))}
                 </ul>

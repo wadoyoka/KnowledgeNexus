@@ -27,15 +27,16 @@ export function SearchForm() {
     }
 
     setIsLoading(true);
+    console.log(`${process.env.NEXT_PUBLIC_FIREBASE_CLOUD_VECTOR_SEARCH_FUNCTION}`)
     try {
       setTarget(searchTerm);
-      const response = await callCloudFunction('knowlege_search_tokyo', { target: searchTerm as string })
+      const response = await callCloudFunction(`${process.env.NEXT_PUBLIC_FIREBASE_CLOUD_VECTOR_SEARCH_FUNCTION}`, { target: searchTerm as string })
       if (response.success && response.data) {
         const data = JSON.parse(JSON.stringify(response))
         setResult(JSON.parse(data.data.data))
         console.log(JSON.parse(data.data.data))
         const jsonData = JSON.parse(data.data.data);
-        console.log(typeof jsonData[0].urls)
+        console.log(typeof jsonData[0].createdAt);
       } else {
         setError(response.error || '検索中にエラーが発生しました。')
       }

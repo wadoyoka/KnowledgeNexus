@@ -121,12 +121,13 @@ export default function CreateKnowledgeForm() {
         name: formData.get('name') as string,
         email: formData.get('email') as string,
         urls: keyValue,
-        message: formData.get('message') as string,
+        message: formData.get('message') as string, 
       }
 
       console.log(data);
-
-      const result = await callCloudFunction('text_embedding_Tokyo', data)
+  
+      console.log(`${process.env.NEXT_PUBLIC_FIREBASE_CLOUD_TEXT_EMBEDDING_FUNCTION}`)
+      const result = await callCloudFunction(`${process.env.NEXT_PUBLIC_FIREBASE_CLOUD_TEXT_EMBEDDING_FUNCTION}`, data);
 
       console.log(result);
 
