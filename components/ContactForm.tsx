@@ -5,10 +5,9 @@ import { Input } from "@/components/ui/input"
 import { Label } from "@/components/ui/label"
 import { Textarea } from "@/components/ui/textarea"
 import { useToast } from "@/hooks/use-toast"
-import { Plus } from "lucide-react"
+import { Plus, X } from "lucide-react"
 import { useState } from 'react'
 import * as z from "zod"
-import { callCloudFunction } from '../utils/callCloudFunction'
 import SubmitButton from "./SubmitButton"
 import { Button } from "./ui/button"
 import { Dialog, DialogClose, DialogContent, DialogDescription, DialogFooter, DialogHeader, DialogTitle, DialogTrigger } from "./ui/dialog"
@@ -27,9 +26,9 @@ export default function ContactForm() {
   const handleAddUrlwithTitle = (url: string, title: string, index: number) => {
     const urlSchema = z.object({
       url: z.string().url("urlの形式になっていません").max(2000, "urlは最大2000文字までです。"),
-      title: z.string().min(0).max(100,"URLのタイトルは100文字までです。"),
+      title: z.string().min(0).max(100, "URLのタイトルは100文字までです。"),
     });
-    if (url !== "") {
+    if (url !== "" && !urls.includes(url)) {
       try {
         const validatedData = urlSchema.parse({
           url,
@@ -41,17 +40,20 @@ export default function ContactForm() {
         const newTitles = [...titles];
         newTitles[index] = validatedData.title;
         setTitles(newTitles);
+        setErrorMessage("");
       } catch (error) {
         if (error instanceof z.ZodError) {
           // 最初のエラーメッセージを返す
-          
+
           setErrorMessage(error.errors[0].message);
           return error.errors[0].message;
         }
         throw error;
       }
-    }else{
+    } else if(url === ""){
       setErrorMessage("URLの欄に何も入力されてません")
+    } else if (urls.includes(url)) {
+      setErrorMessage("このURLは既に入力されています。")
     }
   }
 
@@ -79,7 +81,16 @@ export default function ContactForm() {
   const addUrlField = () => {
     if (urls.length < 10 && urls[urls.length - 1] !== "") {
       setUrls([...urls, ""]);
+      setTitles([...titles, ""])
     }
+  }
+
+  const removeUrlField = (targetUrl: string) => {
+    const targetIndex = urls.findIndex((element) => element === targetUrl);
+    const newUrls = urls.filter((url) => url !== targetUrl);
+    const newTitles = titles.filter((title) => title !== titles[targetIndex]);
+    setUrls(newUrls);
+    setTitles(newTitles);
   }
 
 
@@ -89,28 +100,39 @@ export default function ContactForm() {
     setIsLoading(true)
 
     try {
-      const formData = new FormData(event.currentTarget)
-      console.log(formData)
-      const data = {
-        name: formData.get('name') as string,
-        email: formData.get('email') as string,
-        message: formData.get('message') as string,
+      const UrlWithTitleMap = new Map<string, string>();
+
+      for (let index = 0; index < urls.length; index++) {
+        if (urls[index] === "") {
+          continue;
+        }
+        UrlWithTitleMap.set(urls[index], titles[index]);
       }
 
-      console.log(data);
+      console.log(UrlWithTitleMap);
 
-      const result = await callCloudFunction('text_embedding', data)
+      // const formData = new FormData(event.currentTarget)
+      // console.log(formData)
+      // const data = {
+      //   name: formData.get('name') as string,
+      //   email: formData.get('email') as string,
+      //   message: formData.get('message') as string,
+      // }
 
-      console.log(result);
+      // console.log(data);
 
-      if (result.success) {
-        toast({
-          title: "送信成功",
-          description: "メッセージが正常に送信されました。",
-        })
-      } else {
-        throw new Error(result.error)
-      }
+      // const result = await callCloudFunction('text_embedding', data)
+
+      // console.log(result);
+
+      // if (result.success) {
+      //   toast({
+      //     title: "送信成功",
+      //     description: "メッセージが正常に送信されました。",
+      //   })
+      // } else {
+      //   throw new Error(result.error)
+      // }
     } catch (error) {
       console.error('Error submitting form:', error)
       toast({
@@ -119,8 +141,7 @@ export default function ContactForm() {
         variant: "destructive",
       })
     } finally {
-      setIsLoading(false)
-
+      setIsLoading(false);
     }
   }
 
@@ -144,59 +165,81 @@ export default function ContactForm() {
             <Label htmlFor="email">URL</Label>
             <p className="text-red-600">{errorMessage && errorMessage}</p>
             {urls.map((url, index) => (
-              <Dialog key={`URL_${index}`}>
-                <DialogTrigger asChild>
-                  <Button variant="outline" className="text-left" onClick={() => { handleInitializeBufData(index) }}><div className="flex mr-auto">{url === "" ? <p className="text-slate-400">https://example.com</p> : `${url}`}</div></Button>
-                </DialogTrigger>
-                <DialogContent className="sm:max-w-[425px]">
-                  <DialogHeader>
-                    <DialogTitle>URLの編集</DialogTitle>
-                    <DialogDescription>
-                      URLとURLのタイトルを入力してください。
-                    </DialogDescription>
-                  </DialogHeader>
-                  <div className="grid gap-4 py-4">
-                    <div className="grid grid-cols-6 items-center gap-4">
-                      <Label htmlFor="name" className="text-right">
-                        URL
-                      </Label>
-                      <Input
-                        id={`Url_${index}`}
-                        placeholder="https://example.com"
-                        type="url"
-                        className="col-span-5"
-                        value={bufUrls[index]}
-                        onChange={(e) => handleChangeBufUrl(e.target.value, index)}
-                        required
-                      />
-                    </div>
-                    <div className="grid grid-cols-6 items-center gap-4">
-                      <Label htmlFor="username" className="text-right">
-                        Title
-                      </Label>
-                      <Input
-                        id={`Url_Title_${index}`}
-                        placeholder="タイトル"
-                        className="col-span-5"
-                        value={bufTitles[index]}
-                        onChange={(e) => handleChangeBufTitle(e.target.value, index)}
-                      />
-                    </div>
-                  </div>
-                  <DialogFooter className="flex">
-                    <div className="flex ml-auto gap-2">
-                      <DialogClose asChild>
-                        <div>
-                          <Button type="button" variant="outline">
-                            キャンセル
-                          </Button>
-                          <Button type="button" className="ml-2" onClick={() => { handleAddUrlwithTitle(bufUrls[index], bufTitles[index], index) }}>保存</Button>
+              <div key={`URL_${index}`} className="block grid grid-cols-7 gap-2">
+                <div className={urls.length>1 ? "col-span-6": "col-span-7"}>
+                  <Dialog>
+                    <DialogTrigger asChild>
+                      <Button variant="outline" className="w-full" onClick={() => { handleInitializeBufData(index) }}>
+                        <span className="block truncate mr-auto">
+                          {url === "" ? <p className="text-slate-400">https://example.com</p> : `${url}`}
+                        </span>
+                      </Button>
+                    </DialogTrigger>
+                    <DialogContent className="sm:max-w-[425px]">
+                      <DialogHeader>
+                        <DialogTitle>URLの編集</DialogTitle>
+                        <DialogDescription>
+                          URLとURLのタイトルを入力してください。
+                        </DialogDescription>
+                      </DialogHeader>
+                      <div className="grid gap-4 py-4">
+                        <div className="grid grid-cols-6 items-center gap-4">
+                          <Label htmlFor="name" className="text-right">
+                            URL
+                          </Label>
+                          <Input
+                            id={`Url_${index}`}
+                            placeholder="https://example.com"
+                            type="url"
+                            className="col-span-5"
+                            value={bufUrls[index]}
+                            onChange={(e) => handleChangeBufUrl(e.target.value, index)}
+                            required
+                          />
                         </div>
-                      </DialogClose>
-                    </div>
-                  </DialogFooter>
-                </DialogContent>
-              </Dialog>
+                        <div className="grid grid-cols-6 items-center gap-4">
+                          <Label htmlFor="username" className="text-right">
+                            Title
+                          </Label>
+                          <Input
+                            id={`Url_Title_${index}`}
+                            placeholder="タイトル"
+                            className="col-span-5"
+                            value={bufTitles[index]}
+                            onChange={(e) => handleChangeBufTitle(e.target.value, index)}
+                          />
+                        </div>
+                      </div>
+                      <DialogFooter className="flex">
+                        <div className="flex ml-auto gap-2">
+                          <DialogClose asChild>
+                            <div>
+                              <Button type="button" variant="outline">
+                                キャンセル
+                              </Button>
+                              <Button type="button" className="ml-2" onClick={() => { handleAddUrlwithTitle(bufUrls[index], bufTitles[index], index) }}>保存</Button>
+                            </div>
+                          </DialogClose>
+                        </div>
+                      </DialogFooter>
+                    </DialogContent>
+                  </Dialog>
+                </div>
+
+                {urls.length > 1 &&
+                  <div className="ml-auro">
+                    <Button
+                      variant={"ghost"}
+                      size={"icon"}
+                      type="button"
+                      className="hover:text-red-500"
+                      onClick={()=>{removeUrlField(url)}}
+                    >
+                      <X />
+                    </Button>
+                  </div>
+                }
+              </div>
             ))}
             <Button type="button" variant={"ghost"} onClick={addUrlField} className="flex mx-auto my-2 bg-slate-100 w-full hover:text-sky-400">
               <Plus />
