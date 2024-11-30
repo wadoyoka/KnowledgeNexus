@@ -11,6 +11,7 @@ import { useState } from 'react'
 import * as z from "zod"
 import SubmitButton from "./SubmitButton"
 import { Button } from "./ui/button"
+import { Checkbox } from "./ui/checkbox"
 import { Dialog, DialogClose, DialogContent, DialogDescription, DialogFooter, DialogHeader, DialogTitle, DialogTrigger } from "./ui/dialog"
 
 
@@ -21,6 +22,7 @@ export default function CreateKnowledgeForm() {
   const [bufUrls, setBufUrls] = useState<string[]>([""]);
   const [titles, setTitles] = useState<string[]>([""]);
   const [bufTitles, setBufTitles] = useState<string[]>([""]);
+  const [isSendSlack, setIsSendSlack] = useState<boolean>(true);
   const [errorMessage, setErrorMessage] = useState<string>();
 
 
@@ -53,6 +55,27 @@ export default function CreateKnowledgeForm() {
       }
     } else if (url === "") {
       setErrorMessage("URLの欄に何も入力されてません")
+    } else if (urls.includes(url) && index === urls.findIndex((element) => element === url) &&titles[index] === title) {
+      setErrorMessage("")
+    } else if (urls.includes(url)  && index === urls.findIndex((element) => element === url) && titles[index] !== title) {
+      try {
+        const validatedData = urlSchema.parse({
+          url,
+          title
+        });
+        const newTitles = [...titles];
+        newTitles[index] = validatedData.title;
+        setTitles(newTitles);
+        setErrorMessage("");
+      } catch (error) {
+        if (error instanceof z.ZodError) {
+          // 最初のエラーメッセージを返す
+
+          setErrorMessage(error.errors[0].message);
+          return error.errors[0].message;
+        }
+        throw error;
+      }
     } else if (urls.includes(url)) {
       setErrorMessage("このURLは既に入力されています。")
     }
@@ -98,39 +121,45 @@ export default function CreateKnowledgeForm() {
 
   const handleSubmit = async (event: React.FormEvent<HTMLFormElement>) => {
     event.preventDefault()
-    setIsLoading(true)
+    setIsLoading(true);
+    const knowledgeSchema = z.object({
+      name: z.string().min(1, "名前は一文字以上にしてください。").max(100, "名前は１００文字までにしてください。"),
+      email: z.string().email("有効なメールアドレスを入力してください").refine(
+        (email) => email.endsWith("@cps.im.dendai.ac.jp"),
+        "メールアドレスは @cps.im.dendai.ac.jp で終わる必要があります"
+      ),
+      bufUrls: z.array(z.string().url().max(2000)).min(1, "URLは最低一つ必要です").max(10, "URLは最大10個までです"),
+      message: z.string().min(10, "メモ内容は１０文字以上入力してください。").max(500, "メモ内容は５００文字までです。"),
+    });
 
     try {
       const UrlWithTitleMap = new Map<string, string>();
-
       for (let index = 0; index < urls.length; index++) {
         if (urls[index] === "") {
           continue;
         }
         UrlWithTitleMap.set(urls[index], titles[index]);
       }
+      const keyValue = Object.fromEntries(UrlWithTitleMap);
 
-      console.log(UrlWithTitleMap);
-
-      const keyValue = Object.fromEntries(UrlWithTitleMap)
-      console.log(keyValue);
 
       const formData = new FormData(event.currentTarget)
-      console.log(formData)
+
+      const validatedData = knowledgeSchema.parse({
+        name: formData.get('name'),
+        email: formData.get('email'),
+        bufUrls: urls,
+        message: formData.get('message')
+      });
+
       const data = {
-        name: formData.get('name') as string,
-        email: formData.get('email') as string,
+        name: validatedData.name,
+        email: validatedData.email,
         urls: keyValue,
-        message: formData.get('message') as string, 
+        message: validatedData.message,
       }
 
-      console.log(data);
-  
-      console.log(`${process.env.NEXT_PUBLIC_FIREBASE_CLOUD_TEXT_EMBEDDING_FUNCTION}`)
       const result = await callCloudFunction(`${process.env.NEXT_PUBLIC_FIREBASE_CLOUD_TEXT_EMBEDDING_FUNCTION}`, data);
-
-      console.log(result);
-
       if (result.success) {
         toast({
           title: "送信成功",
@@ -143,7 +172,7 @@ export default function CreateKnowledgeForm() {
       console.error('Error submitting form:', error)
       toast({
         title: "エラー",
-        description: error instanceof Error ? error.message : "送信中にエラーが発生しました。もう一度お試しください。",
+        description: error instanceof z.ZodError ? error.errors[0].message : `送信中にエラーが発生しました。もう一度お試しください。\n${error}`,
         variant: "destructive",
       })
     } finally {
@@ -253,7 +282,18 @@ export default function CreateKnowledgeForm() {
           </div>
           <div className="space-y-2">
             <Label htmlFor="message">メモ内容</Label>
-            <Textarea id="message" name="message" required />
+            <Textarea id="message" name="message" rows={10} required />
+          </div>
+          <div className="space-y-2">
+            <div className="flex items-center space-x-2">
+              <Checkbox id="terms" checked={isSendSlack} onCheckedChange={() => { setIsSendSlack((prev) => !prev) }} className="data-[state=checked]:bg-sky-600 data-[state=checked]:text-white" />
+              <label
+                htmlFor="terms"
+                className={`leading-none peer-disabled:cursor-not-allowed peer-disabled:opacity-70 font-medium text-lg text-slate-400 ${isSendSlack && "font-bold text-lg text-sky-600"}`}
+              >
+                Slackに通知する
+              </label>
+            </div>
           </div>
           <SubmitButton preText={"送信"} postText={"送信中"} disabled={isLoading} width="w-full" />
         </form>
