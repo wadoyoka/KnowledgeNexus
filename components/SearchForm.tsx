@@ -1,8 +1,9 @@
 'use client'
 
+import { Search } from 'lucide-react'
 import { useState } from 'react'
 import { callCloudFunction } from '../utils/callCloudFunction'
-import KnowledgeTable from './KnowledgeTable'
+import KnowledgeCards from './KnowledgeCards'
 import SubmitButton from './SubmitButton'
 import { Input } from './ui/input'
 
@@ -28,11 +29,13 @@ export function SearchForm() {
     setIsLoading(true);
     try {
       setTarget(searchTerm);
-      const response = await callCloudFunction('knowlege_search', { target: searchTerm as string })
+      const response = await callCloudFunction('knowlege_search_tokyo', { target: searchTerm as string })
       if (response.success && response.data) {
         const data = JSON.parse(JSON.stringify(response))
         setResult(JSON.parse(data.data.data))
         console.log(JSON.parse(data.data.data))
+        const jsonData = JSON.parse(data.data.data);
+        console.log(typeof jsonData[0].urls)
       } else {
         setError(response.error || '検索中にエラーが発生しました。')
       }
@@ -47,27 +50,32 @@ export function SearchForm() {
   return (
     <div className="w-screen-[96vw] max-w-screen-xl mx-auto mt-10">
       <form onSubmit={handleSubmit} className="mb-4">
-        <div className="flex items-center py-2">
-          <Input
-            className="mr-2"
-            type="text"
-            placeholder="検索ワードを入力"
-            aria-label="検索ワード"
-            value={searchTerm}
-            onChange={(e) => setSearchTerm(e.target.value)}
-          />
-          <SubmitButton preText={'検索'} postText={'検索中'} disabled={isLoading} />
+        <div className="flex w-full max-w-7xl gap-2">
+          <div className="relative flex-1">
+            <Search className="absolute left-3 top-1/2 md:h-8 md:w-8 -translate-y-1/2 text-muted-foreground" />
+            <Input
+              type="search"
+              placeholder="検索"
+              className="pl-12 md:pl-16 md:h-16 md:text-xl bg-white"
+              aria-label="検索ワード"
+              value={searchTerm}
+              onChange={(e) => setSearchTerm(e.target.value)}
+            />
+          </div>
+          <div className='my-auto'>
+            <SubmitButton preText={'検索'} postText={'検索中'} disabled={isLoading} width='md:w-24' height='md:h-16' fontSize=' md:text-xl' />
+          </div>
         </div>
       </form>
-      {result && (
-        <div className="mt-4 p-4 rounded">
-          <h2 className="font-bold text-2xl mb-2">{target!=="" && `${target}の検索結果`}</h2>
-          <KnowledgeTable knowledges={result} />
-        </div>
-      )}
       {error && (
         <div className="mt-4 p-4 bg-red-100 text-red-800 rounded">
           <p>{error}</p>
+        </div>
+      )}
+      {result && (
+        <div className="mt-4 px-2">
+          <h2 className="font-bold text-2xl mb-2">{target !== "" && `検索ワード：${target}`}</h2>
+          <KnowledgeCards knowledges={result} />
         </div>
       )}
     </div>

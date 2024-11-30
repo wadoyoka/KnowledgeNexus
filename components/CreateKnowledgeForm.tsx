@@ -5,6 +5,7 @@ import { Input } from "@/components/ui/input"
 import { Label } from "@/components/ui/label"
 import { Textarea } from "@/components/ui/textarea"
 import { useToast } from "@/hooks/use-toast"
+import { callCloudFunction } from "@/utils/callCloudFunction"
 import { Plus, X } from "lucide-react"
 import { useState } from 'react'
 import * as z from "zod"
@@ -13,7 +14,7 @@ import { Button } from "./ui/button"
 import { Dialog, DialogClose, DialogContent, DialogDescription, DialogFooter, DialogHeader, DialogTitle, DialogTrigger } from "./ui/dialog"
 
 
-export default function ContactForm() {
+export default function CreateKnowledgeForm() {
   const [isLoading, setIsLoading] = useState(false)
   const { toast } = useToast()
   const [urls, setUrls] = useState<string[]>([""]);
@@ -50,7 +51,7 @@ export default function ContactForm() {
         }
         throw error;
       }
-    } else if(url === ""){
+    } else if (url === "") {
       setErrorMessage("URLの欄に何も入力されてません")
     } else if (urls.includes(url)) {
       setErrorMessage("このURLは既に入力されています。")
@@ -111,28 +112,32 @@ export default function ContactForm() {
 
       console.log(UrlWithTitleMap);
 
-      // const formData = new FormData(event.currentTarget)
-      // console.log(formData)
-      // const data = {
-      //   name: formData.get('name') as string,
-      //   email: formData.get('email') as string,
-      //   message: formData.get('message') as string,
-      // }
+      const keyValue = Object.fromEntries(UrlWithTitleMap)
+      console.log(keyValue);
 
-      // console.log(data);
+      const formData = new FormData(event.currentTarget)
+      console.log(formData)
+      const data = {
+        name: formData.get('name') as string,
+        email: formData.get('email') as string,
+        urls: keyValue,
+        message: formData.get('message') as string,
+      }
 
-      // const result = await callCloudFunction('text_embedding', data)
+      console.log(data);
 
-      // console.log(result);
+      const result = await callCloudFunction('text_embedding_Tokyo', data)
 
-      // if (result.success) {
-      //   toast({
-      //     title: "送信成功",
-      //     description: "メッセージが正常に送信されました。",
-      //   })
-      // } else {
-      //   throw new Error(result.error)
-      // }
+      console.log(result);
+
+      if (result.success) {
+        toast({
+          title: "送信成功",
+          description: "メッセージが正常に送信されました。",
+        })
+      } else {
+        throw new Error(result.error)
+      }
     } catch (error) {
       console.error('Error submitting form:', error)
       toast({
@@ -146,7 +151,7 @@ export default function ContactForm() {
   }
 
   return (
-    <Card className="w-full max-w-md mx-auto">
+    <Card className="w-full max-w-md mx-auto ">
       <CardHeader>
         <CardTitle>データ登録</CardTitle>
         <CardDescription>以下のフォームに情報を入力してください。</CardDescription>
@@ -166,7 +171,7 @@ export default function ContactForm() {
             <p className="text-red-600">{errorMessage && errorMessage}</p>
             {urls.map((url, index) => (
               <div key={`URL_${index}`} className="block grid grid-cols-7 gap-2">
-                <div className={urls.length>1 ? "col-span-6": "col-span-7"}>
+                <div className={urls.length > 1 ? "col-span-6" : "col-span-7"}>
                   <Dialog>
                     <DialogTrigger asChild>
                       <Button variant="outline" className="w-full" onClick={() => { handleInitializeBufData(index) }}>
@@ -233,7 +238,7 @@ export default function ContactForm() {
                       size={"icon"}
                       type="button"
                       className="hover:text-red-500"
-                      onClick={()=>{removeUrlField(url)}}
+                      onClick={() => { removeUrlField(url) }}
                     >
                       <X />
                     </Button>
