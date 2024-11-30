@@ -7,6 +7,7 @@ import { Textarea } from "@/components/ui/textarea"
 import { useToast } from "@/hooks/use-toast"
 import { Plus } from "lucide-react"
 import { useState } from 'react'
+import * as z from "zod"
 import { callCloudFunction } from '../utils/callCloudFunction'
 import SubmitButton from "./SubmitButton"
 import { Button } from "./ui/button"
@@ -17,19 +18,71 @@ export default function ContactForm() {
   const [isLoading, setIsLoading] = useState(false)
   const { toast } = useToast()
   const [urls, setUrls] = useState<string[]>([""]);
-  const [bufUrl, setBufUrl] = useState<string>("");
+  const [bufUrls, setBufUrls] = useState<string[]>([""]);
   const [titles, setTitles] = useState<string[]>([""]);
-  const [bufTitle, setBufTitle] = useState<string>("");
+  const [bufTitles, setBufTitles] = useState<string[]>([""]);
+  const [errorMessage, setErrorMessage] = useState<string>();
 
 
-  const handleAddUrl = (url: string, title: string) => {
-    const newUrls = [...urls, url];
-    setUrls(newUrls);
-    setBufUrl("");
-    const newTitles = [...titles, title];
-    setTitles(newTitles);
-    setBufTitle("");
+  const handleAddUrlwithTitle = (url: string, title: string, index: number) => {
+    const urlSchema = z.object({
+      url: z.string().url("urlの形式になっていません").max(2000, "urlは最大2000文字までです。"),
+      title: z.string().min(0).max(100,"URLのタイトルは100文字までです。"),
+    });
+    if (url !== "") {
+      try {
+        const validatedData = urlSchema.parse({
+          url,
+          title
+        });
+        const newUrls = [...urls];
+        newUrls[index] = validatedData.url;
+        setUrls(newUrls);
+        const newTitles = [...titles];
+        newTitles[index] = validatedData.title;
+        setTitles(newTitles);
+      } catch (error) {
+        if (error instanceof z.ZodError) {
+          // 最初のエラーメッセージを返す
+          
+          setErrorMessage(error.errors[0].message);
+          return error.errors[0].message;
+        }
+        throw error;
+      }
+    }else{
+      setErrorMessage("URLの欄に何も入力されてません")
+    }
   }
+
+  const handleInitializeBufData = (index: number) => {
+    const newbufUrls = [...bufUrls];
+    newbufUrls[index] = urls[index];
+    setBufUrls(newbufUrls);
+    const newbufTitles = [...bufTitles];
+    newbufTitles[index] = titles[index];
+    setBufTitles(newbufTitles);
+  }
+
+  const handleChangeBufUrl = (bufUrl: string, index: number) => {
+    const newbufUrls = [...bufUrls];
+    newbufUrls[index] = bufUrl;
+    setBufUrls(newbufUrls);
+  }
+
+  const handleChangeBufTitle = (bufTitle: string, index: number) => {
+    const newbufTitles = [...bufTitles];
+    newbufTitles[index] = bufTitle;
+    setBufTitles(newbufTitles);
+  }
+
+  const addUrlField = () => {
+    if (urls.length < 10 && urls[urls.length - 1] !== "") {
+      setUrls([...urls, ""]);
+    }
+  }
+
+
 
   const handleSubmit = async (event: React.FormEvent<HTMLFormElement>) => {
     event.preventDefault()
@@ -89,10 +142,11 @@ export default function ContactForm() {
           </div>
           <div className="space-y-2 flex flex-col">
             <Label htmlFor="email">URL</Label>
+            <p className="text-red-600">{errorMessage && errorMessage}</p>
             {urls.map((url, index) => (
-              <Dialog key={`${url}_${index}`}>
+              <Dialog key={`URL_${index}`}>
                 <DialogTrigger asChild>
-                  <Button variant="outline" className="text-left"><div className="flex mr-auto">{url === "" ? <p className="text-slate-400">https://example.com</p> : `${url}`}</div></Button>
+                  <Button variant="outline" className="text-left" onClick={() => { handleInitializeBufData(index) }}><div className="flex mr-auto">{url === "" ? <p className="text-slate-400">https://example.com</p> : `${url}`}</div></Button>
                 </DialogTrigger>
                 <DialogContent className="sm:max-w-[425px]">
                   <DialogHeader>
@@ -109,9 +163,11 @@ export default function ContactForm() {
                       <Input
                         id={`Url_${index}`}
                         placeholder="https://example.com"
+                        type="url"
                         className="col-span-5"
-                        value={bufUrl}
-                        onChange={(e) => setBufUrl(e.target.value)}
+                        value={bufUrls[index]}
+                        onChange={(e) => handleChangeBufUrl(e.target.value, index)}
+                        required
                       />
                     </div>
                     <div className="grid grid-cols-6 items-center gap-4">
@@ -122,25 +178,27 @@ export default function ContactForm() {
                         id={`Url_Title_${index}`}
                         placeholder="タイトル"
                         className="col-span-5"
-                        value={bufTitle}
-                        onChange={(e) => setBufTitle(e.target.value)}
+                        value={bufTitles[index]}
+                        onChange={(e) => handleChangeBufTitle(e.target.value, index)}
                       />
                     </div>
                   </div>
                   <DialogFooter className="flex">
                     <div className="flex ml-auto gap-2">
                       <DialogClose asChild>
-                        <Button type="button" variant="outline">
-                          キャンセル
-                        </Button>
+                        <div>
+                          <Button type="button" variant="outline">
+                            キャンセル
+                          </Button>
+                          <Button type="button" className="ml-2" onClick={() => { handleAddUrlwithTitle(bufUrls[index], bufTitles[index], index) }}>保存</Button>
+                        </div>
                       </DialogClose>
-                      <Button type="button" onClick={() => { handleAddUrl(bufUrl, bufTitle) }}>保存</Button>
                     </div>
                   </DialogFooter>
                 </DialogContent>
               </Dialog>
             ))}
-            <Button type="button" variant={"ghost"} className="flex mx-auto my-2 bg-slate-100 w-full hover:text-sky-400">
+            <Button type="button" variant={"ghost"} onClick={addUrlField} className="flex mx-auto my-2 bg-slate-100 w-full hover:text-sky-400">
               <Plus />
             </Button>
           </div>
