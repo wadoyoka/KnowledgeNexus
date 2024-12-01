@@ -1,12 +1,15 @@
 'use client'
 
-import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card"
+import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card"
 import { Input } from "@/components/ui/input"
 import { Label } from "@/components/ui/label"
 import { Textarea } from "@/components/ui/textarea"
 import { useToast } from "@/hooks/use-toast"
 import { callCloudFunction } from "@/utils/callCloudFunction"
 import { Plus, X } from "lucide-react"
+import { useSession } from "next-auth/react"
+import { usePathname } from "next/navigation"
+import router from "next/router"
 import { useState } from 'react'
 import * as z from "zod"
 import SubmitButton from "./Buttons/SubmitButton/SubmitButton"
@@ -24,6 +27,16 @@ export default function CreateKnowledgeForm() {
   const [bufTitles, setBufTitles] = useState<string[]>([""]);
   const [isSendSlack, setIsSendSlack] = useState<boolean>(true);
   const [errorMessage, setErrorMessage] = useState<string>();
+  const pathname = usePathname();
+  const { data: session, status } = useSession();
+
+  if (status !== "authenticated") {
+    return <p>Loadng...</p>
+  }
+
+  if (!session) {
+    router.push(`/Signin?callbackUrl=${pathname}`);
+  }
 
 
   const handleAddUrlwithTitle = (url: string, title: string, index: number) => {
@@ -146,8 +159,8 @@ export default function CreateKnowledgeForm() {
       const formData = new FormData(event.currentTarget)
 
       const validatedData = knowledgeSchema.parse({
-        name: formData.get('name'),
-        email: formData.get('email'),
+        name: session.user.id,
+        email: session.user.email,
         bufUrls: urls,
         message: formData.get('message')
       });
@@ -183,19 +196,10 @@ export default function CreateKnowledgeForm() {
   return (
     <Card className="w-full max-w-md mx-auto ">
       <CardHeader>
-        <CardTitle>データ登録</CardTitle>
-        <CardDescription>以下のフォームに情報を入力してください。</CardDescription>
+        <CardTitle>{session.user.email}</CardTitle>
       </CardHeader>
       <CardContent>
         <form onSubmit={handleSubmit} className="space-y-4">
-          <div className="space-y-2">
-            <Label htmlFor="name">お名前</Label>
-            <Input id="name" name="name" required />
-          </div>
-          <div className="space-y-2">
-            <Label htmlFor="email">メールアドレス</Label>
-            <Input id="email" name="email" type="email" required />
-          </div>
           <div className="space-y-2 flex flex-col">
             <Label htmlFor="email">URL</Label>
             <p className="text-red-600">{errorMessage && errorMessage}</p>
@@ -286,10 +290,10 @@ export default function CreateKnowledgeForm() {
           </div>
           <div className="space-y-2">
             <div className="flex items-center space-x-2">
-              <Checkbox id="terms" checked={isSendSlack} onCheckedChange={() => { setIsSendSlack((prev) => !prev) }} className="data-[state=checked]:bg-sky-600 data-[state=checked]:text-white" />
+              <Checkbox id="terms" checked={isSendSlack} onCheckedChange={() => { setIsSendSlack((prev) => !prev) }} className={`data-[state=checked]:bg-sky-600 data-[state=checked]:text-white`} />
               <label
                 htmlFor="terms"
-                className={`leading-none peer-disabled:cursor-not-allowed peer-disabled:opacity-70 font-medium text-lg text-slate-400 ${isSendSlack && "font-bold text-lg text-sky-600"}`}
+                className={`${isSendSlack ? "font-bold text-lg text-sky-600" : "leading-none peer-disabled:cursor-not-allowed peer-disabled:opacity-70 font-medium text-lg text-slate-400 font-bold text-lg text-sky-600"}`}
               >
                 Slackに通知する
               </label>
