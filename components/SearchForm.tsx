@@ -34,9 +34,6 @@ export function SearchForm() {
       if (response.success && response.data) {
         const data = JSON.parse(JSON.stringify(response))
         setResult(JSON.parse(data.data.data))
-        console.log(JSON.parse(data.data.data))
-        const jsonData = JSON.parse(data.data.data);
-        console.log(typeof jsonData[0].createdAt);
       } else {
         setError(response.error || '検索中にエラーが発生しました。')
       }

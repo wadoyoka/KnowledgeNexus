@@ -1,5 +1,5 @@
+import UserFirestoreCollection from './components/UserFirestore';
 import UserProfile from './components/UserProfile';
-import { FirestoreCollection } from './utils/firestore';
 
 export default function ProfilePage() {
     return (
@@ -13,8 +13,9 @@ export default function ProfilePage() {
             <div className="mt-8 sm:mx-auto sm:w-full sm:max-w-md">
                 <UserProfile />
             </div>
-            
-            <FirestoreCollection />
+            <div>
+                <UserFirestoreCollection />
+            </div>
         </div>
     );
 }
