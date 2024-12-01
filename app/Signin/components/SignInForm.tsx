@@ -1,11 +1,14 @@
 'use client';
-import SignOutButton from '@/components/Buttons/SignOutButton/SignOutButton';
 import { auth } from '@/lib/firebase';
+import { passwordSchema } from '@/utils/firebase/PasswordSchema';
 import { signInWithEmailAndPassword, validatePassword } from 'firebase/auth';
 import { EyeIcon, EyeOffIcon } from 'lucide-react';
+import { signIn } from 'next-auth/react';
 import Link from 'next/link';
+import { useSearchParams } from 'next/navigation';
 import { useState } from 'react';
-import { useAuthState } from 'react-firebase-hooks/auth';
+import { z } from 'zod';
+
 
 const ALLOWED_DOMAINS = ['cps.im.dendai.ac.jp']; // 許可するドメインのリスト
 
@@ -13,8 +16,9 @@ export default function SignInForm() {
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
   const [error, setError] = useState<string | null>(null);
-  const [user] = useAuthState(auth);
   const [showPassword, setShowPassword] = useState(false);
+  const searchParams = useSearchParams();
+  const callbackUrl = searchParams.get('callbackUrl')
 
   const handleSignIn = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -27,11 +31,19 @@ export default function SignInForm() {
     }
 
     try {
+      passwordSchema.parse(password);
       await signInWithEmailAndPassword(auth, email, password);
-      // サインイン成功時の処理
+      if (auth.currentUser) {
+        const idToken = await auth.currentUser.getIdToken(true);
+        await signIn("credentials", { idToken, callbackUrl: `${callbackUrl ? callbackUrl :"/"}` })
+      }else{
+        setError("現在のユーザーの取得に失敗しました");
+      }
     } catch (error) {
-      const status = await validatePassword(auth, password);
-      if (!status.isValid) {
+      if (error instanceof z.ZodError) {
+        setError(error.errors[0].message);
+        console.error("Validation errors:", error.errors);
+      }else if (!(await validatePassword(auth, password)).isValid) {
         setError('パスワードが脆弱です。パスワードを再設定してください。');
       } else {
         setError('サインインに失敗しました。メールアドレスとパスワードを確認してください。');
@@ -39,15 +51,6 @@ export default function SignInForm() {
       console.error('Error signing in:', error);
     }
   };
-
-  if (user) {
-    return (
-      <div>
-        <p>サインイン済み: {user.email}</p>
-        <SignOutButton />
-      </div>
-    );
-  }
 
   return (
     <div className="min-h-screen flex items-center justify-center bg-gray-50 py-12 px-4 sm:px-6 lg:px-8">
@@ -111,6 +114,14 @@ export default function SignInForm() {
               {error}
             </div>
           )}
+          
+          <div className="flex items-center justify-between">
+            <div className="text-sm">
+              <Link href="/Signup" className="font-medium text-indigo-600 hover:text-indigo-500">
+                アカウント登録
+              </Link>
+            </div>
+          </div>
 
           <div className="flex items-center justify-between">
             <div className="text-sm">

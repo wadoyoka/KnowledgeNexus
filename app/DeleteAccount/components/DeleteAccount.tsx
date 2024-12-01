@@ -4,9 +4,9 @@ import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { auth } from '@/lib/firebase';
+import { userSignOutNextAuth } from "@/utils/nextAuth/SignOut";
 import { deleteUser, EmailAuthProvider, reauthenticateWithCredential } from 'firebase/auth';
 import { AlertCircle } from 'lucide-react';
-import { useRouter } from 'next/navigation';
 import { useState } from 'react';
 import { useAuthState } from 'react-firebase-hooks/auth';
 
@@ -15,7 +15,6 @@ export default function DeleteAccount() {
   const [password, setPassword] = useState('');
   const [error, setError] = useState<string | null>(null);
   const [isDeleting, setIsDeleting] = useState(false);
-  const router = useRouter();
 
   const handleDeleteAccount = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -28,7 +27,7 @@ export default function DeleteAccount() {
       const credential = EmailAuthProvider.credential(user.email!, password);
       await reauthenticateWithCredential(user, credential);
       await deleteUser(user);
-      router.push('/');
+      userSignOutNextAuth();
     } catch (error) {
       console.error('Error deleting account:', error);
       setError('アカウントの削除に失敗しました。パスワードを確認してください。');

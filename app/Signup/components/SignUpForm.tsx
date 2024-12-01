@@ -1,6 +1,8 @@
 'use client';
+import { passwordSchema } from '@/utils/firebase/PasswordSchema';
 import { signup } from '@/utils/firebase/SignUp';
 import { useState } from 'react';
+import { z } from 'zod';
 
 const ALLOWED_DOMAINS = ['cps.im.dendai.ac.jp']; // 許可するドメインのリスト
 
@@ -9,6 +11,7 @@ export default function SignUpForm() {
   const [password, setPassword] = useState('');
   const [error, setError] = useState<string | null>(null);
   const [successMessage, setSuccessMessage] = useState<string | null>(null);
+
 
   const handleSignUp = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -22,11 +25,20 @@ export default function SignUpForm() {
     }
 
     try {
+      passwordSchema.parse(password);
       await signup(email, password);
-      setSuccessMessage('確認メールを送信しました。メールを確認してアカウントを有効化してください。');
+      setSuccessMessage('確認メールを送信しました。メールを確認してアカウントを有効化してください。このページは5秒後にログインページにリダイレクトします。');
+      setTimeout(function () {
+        window.location.href = '/Signin';
+      }, 5 * 1000);
     } catch (error) {
-      setError('サインアップに失敗しました。もう一度お試しください。');
-      console.error('Error signing up:', error);
+      if (error instanceof z.ZodError) {
+        setError(error.errors[0].message);
+        console.error("Validation errors:", error.errors);
+      } else {
+        setError('サインアップに失敗しました。もう一度お試しください。');
+        console.error('Error signing up:', error);
+      }
     }
   };
 

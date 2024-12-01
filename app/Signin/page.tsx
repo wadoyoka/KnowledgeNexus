@@ -1,9 +1,13 @@
-import SignInForm from './components/SignInForm';
+import { authOptions } from '@/lib/auth';
+import { getServerSession } from 'next-auth/next';
+import AuthWrapper from './components/auth-wrapper';
 
-export default function SignInPage() {
+export default async function SignInPage() {
+    const session = await getServerSession(authOptions)
+
     return (
         <div>
-            <SignInForm />
+            <AuthWrapper initialSession={session} />
         </div>
     );
 }
