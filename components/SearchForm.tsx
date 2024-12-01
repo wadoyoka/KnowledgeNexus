@@ -3,8 +3,8 @@
 import { Search } from 'lucide-react'
 import { useState } from 'react'
 import { callCloudFunction } from '../utils/callCloudFunction'
+import SubmitButton from './Buttons/SubmitButton/SubmitButton'
 import KnowledgeCards from './KnowledgeCards'
-import SubmitButton from './SubmitButton'
 import { Input } from './ui/input'
 
 

@@ -9,7 +9,7 @@ import { callCloudFunction } from "@/utils/callCloudFunction"
 import { Plus, X } from "lucide-react"
 import { useState } from 'react'
 import * as z from "zod"
-import SubmitButton from "./SubmitButton"
+import SubmitButton from "./Buttons/SubmitButton/SubmitButton"
 import { Button } from "./ui/button"
 import { Checkbox } from "./ui/checkbox"
 import { Dialog, DialogClose, DialogContent, DialogDescription, DialogFooter, DialogHeader, DialogTitle, DialogTrigger } from "./ui/dialog"
