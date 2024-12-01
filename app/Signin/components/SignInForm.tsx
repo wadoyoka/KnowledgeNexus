@@ -1,13 +1,13 @@
 'use client';
 import SignOutButton from '@/components/Buttons/SignOutButton/SignOutButton';
 import { auth } from '@/lib/firebase';
-import { signInWithEmailAndPassword } from 'firebase/auth';
+import { signInWithEmailAndPassword, validatePassword } from 'firebase/auth';
 import { EyeIcon, EyeOffIcon } from 'lucide-react';
 import Link from 'next/link';
 import { useState } from 'react';
 import { useAuthState } from 'react-firebase-hooks/auth';
 
-const ALLOWED_DOMAINS = ['example.com', 'company.com']; // 許可するドメインのリスト
+const ALLOWED_DOMAINS = ['cps.im.dendai.ac.jp']; // 許可するドメインのリスト
 
 export default function SignInForm() {
   const [email, setEmail] = useState('');
@@ -30,7 +30,12 @@ export default function SignInForm() {
       await signInWithEmailAndPassword(auth, email, password);
       // サインイン成功時の処理
     } catch (error) {
-      setError('サインインに失敗しました。メールアドレスとパスワードを確認してください。');
+      const status = await validatePassword(auth, password);
+      if (!status.isValid) {
+        setError('パスワードが脆弱です。パスワードを再設定してください。');
+      } else {
+        setError('サインインに失敗しました。メールアドレスとパスワードを確認してください。');
+      }
       console.error('Error signing in:', error);
     }
   };
@@ -109,7 +114,7 @@ export default function SignInForm() {
 
           <div className="flex items-center justify-between">
             <div className="text-sm">
-              <Link href="/password-reset" className="font-medium text-indigo-600 hover:text-indigo-500">
+              <Link href="/PasswordReset" className="font-medium text-indigo-600 hover:text-indigo-500">
                 パスワードを忘れましたか？
               </Link>
             </div>
