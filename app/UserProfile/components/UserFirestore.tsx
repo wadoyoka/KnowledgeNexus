@@ -2,7 +2,7 @@
 import KnowledgeCards from '@/components/KnowledgeCards';
 import { firestore } from '@/lib/firebase';
 import { Knowledge } from '@/types/KnowledgeResponse';
-import { collection, limit, query, where } from 'firebase/firestore';
+import { collection, DocumentData, limit, query, QueryDocumentSnapshot, where } from 'firebase/firestore';
 import { useSession } from 'next-auth/react';
 import { usePathname, useRouter } from 'next/navigation';
 import { useEffect } from 'react';
@@ -32,7 +32,7 @@ export default function UserFirestoreCollection() {
         }
     }, [status, router, pathname]);
 
-    const transformToKnowledge = (doc: any): Knowledge => ({
+    const transformToKnowledge = (doc: QueryDocumentSnapshot<DocumentData, DocumentData>): Knowledge => ({
         id: doc.id,
         name: doc.data().name || '',
         email: doc.data().email || '',
