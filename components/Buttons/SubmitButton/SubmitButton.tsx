@@ -52,9 +52,12 @@ interface SubmitButtonProps {
 
     /** 無効時にローダーをテキストの右側に配置するかどうか */
     isLoaderRight?: boolean;
+
+    /** 無効時にローダーをテキストの右側に配置するかどうか */
+    LoaderSize?: string;
 }
 
-export default function SubmitButton({ preText, postText, disabled, width, height, padding = "px-4 py-2", fontSize, fontweight, baseColor = "bg-sky-500", hoverColor = "hover:bg-sky-500/75", baseTextColor = "text-white", hoverTextColor = "text-white", borderRadius, borderWidth, borderColor, borderStyle, isLoaderRight }: SubmitButtonProps) {
+export default function SubmitButton({ preText, postText, disabled, width, height, padding = "px-4 py-2", fontSize, fontweight, baseColor = "bg-sky-500", hoverColor = "hover:bg-sky-500/75", baseTextColor = "text-white", hoverTextColor = "text-white", borderRadius, borderWidth, borderColor, borderStyle, isLoaderRight, LoaderSize }: SubmitButtonProps) {
     return (
         <Button type="submit" className={`${width} ${height} ${padding} ${fontSize} ${fontweight} ${baseColor} ${hoverColor} ${baseTextColor} ${hoverTextColor} ${borderRadius} ${borderWidth} ${borderColor} ${borderStyle}`} disabled={disabled}>
             {disabled ? (
@@ -62,10 +65,10 @@ export default function SubmitButton({ preText, postText, disabled, width, heigh
                     {isLoaderRight
                         ? <div className="flex">
                             {`${postText}`}
-                            <Loader2 className="ml-2 h-4 w-4 animate-spin" />
+                            <Loader2 size={`${LoaderSize}`} className="ml-2 h-4 w-4 animate-spin" />
                         </div>
                         : <div className="flex">
-                            <Loader2 className="mr-2 h-4 w-4 animate-spin" />
+                            <Loader2 size={`${LoaderSize}`} className="mr-2 h-4 w-4 animate-spin" />
                             {`${postText}`}
                         </div>
                     }
