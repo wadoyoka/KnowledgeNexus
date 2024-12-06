@@ -1,4 +1,3 @@
-import SignOutButton from '@/components/Buttons/SignOutButton/SignOutButton'
 import { SearchForm } from '@/components/SearchForm'
 
 export default function Home() {
@@ -6,7 +5,6 @@ export default function Home() {
     <div>
       <div className="min-h-screen p-4 bg-slate-200">
         <SearchForm />
-        <SignOutButton />
       </div>
     </div>
   )

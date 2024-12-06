@@ -1,5 +1,8 @@
 'use client';
+import { handleSignOut } from "@/utils/userSignOut";
+import { LogOut, User } from "lucide-react";
 import { useSession } from "next-auth/react";
+import Link from "next/link";
 import { usePathname } from "next/navigation";
 import router from "next/router";
 import { Avatar, AvatarFallback, AvatarImage } from "../ui/avatar";
@@ -18,6 +21,7 @@ export default function HeaderAvatar() {
         router.push(`/Signin?callbackUrl=${pathname}`);
     }
 
+
     return (
         <DropdownMenu>
             <DropdownMenuTrigger asChild>
@@ -26,12 +30,20 @@ export default function HeaderAvatar() {
                     <AvatarFallback>Logo</AvatarFallback>
                 </Avatar>
             </DropdownMenuTrigger>
-            <DropdownMenuContent side="bottom" className="mr-6">
+            <DropdownMenuContent side="bottom" className="mr-10">
                 <DropdownMenuItem>
-                    <span>名前の変更</span>
+                    <Link href={"/UserProfile"}>
+                        <div className="flex my-auto">
+                            <User />
+                            <span className="ml-2">プロフィール</span>
+                        </div>
+                    </Link>
                 </DropdownMenuItem>
-                <DropdownMenuItem>
-                    <span>削除</span>
+                <DropdownMenuItem onClick={handleSignOut}>
+                    <div className="flex">
+                        <LogOut />
+                        <span className="ml-2">ログアウト</span>
+                    </div>
                 </DropdownMenuItem>
             </DropdownMenuContent>
         </DropdownMenu>

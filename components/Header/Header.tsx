@@ -5,7 +5,7 @@ import HeaderAvatar from "./HeaderAvatar";
 
 export default function Header() {
     return (
-        <header className="w-full bg-white h-16 shadow-sm flex">
+        <header className="w-full bg-white h-16 shadow-sm flex z-50">
             <div className="flex">
                 <Link href={"/"} className="flex duration-200 hover:opacity-75">
                     <Avatar className="ml-4 my-auto h-12 w-12">
@@ -30,10 +30,10 @@ export default function Header() {
                 <Link href={"/CreateKnowledge"}>
                     <button type="button" className="p-2 md:h-14 group">
                         <div className="flex relative overflow-hidden space-x-1">
-                            <div>
+                            <div className="my-auto">
                                 <PenTool size={26} />
                             </div>
-                            <p className="my-auto hidden text-xl font-bold md:block hover:text-accent-foreground">検索する</p>
+                            <p className="my-auto hidden text-xl font-bold md:block hover:text-accent-foreground">作成する</p>
                             <span className="hidden md:block absolute bottom-0 left-1/2 w-0 h-0.5 bg-accent-foreground transition-all group-hover:w-full group-hover:left-0"></span>
                         </div>
                     </button>
