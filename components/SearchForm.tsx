@@ -1,9 +1,8 @@
 'use client'
 
-import { Search } from 'lucide-react'
+import { Loader2, Search } from 'lucide-react'
 import { useState } from 'react'
 import { callCloudFunction } from '../utils/callCloudFunction'
-import SubmitButton from './Buttons/SubmitButton/SubmitButton'
 import KnowledgeCards from './KnowledgeCards'
 import { Input } from './ui/input'
 
@@ -54,14 +53,16 @@ export function SearchForm() {
             <Input
               type="search"
               placeholder="検索"
-              className="pl-12 md:pl-16 md:h-16 md:text-xl bg-white"
+              className="pl-12 md:pl-16 md:h-16 md:text-xl bg-white h-12"
               aria-label="検索ワード"
               value={searchTerm}
               onChange={(e) => setSearchTerm(e.target.value)}
             />
           </div>
           <div className='my-auto'>
-            <SubmitButton preText={'検索'} postText={'検索中'} disabled={isLoading} width='md:w-24' height='md:h-16' fontSize=' md:text-xl' />
+            <button type='submit' className='font-extrabold text-xl bg-sky-500 text-white w-24 h-12 md:h-16 rounded-lg hidden md:block'>
+              {isLoading ? <p>検索中</p> : <p>検索</p>}
+            </button>
           </div>
         </div>
       </form>
@@ -73,6 +74,7 @@ export function SearchForm() {
       {result && (
         <div className="mt-4 px-2">
           <h2 className="font-bold text-2xl mb-2">{target !== "" && `検索ワード：${target}`}</h2>
+          {isLoading && <Loader2 className="mx-auto mt-4 w-12 h-12 md:h-24 md:w-24 animate-spin" />}
           <KnowledgeCards knowledges={result} />
         </div>
       )}

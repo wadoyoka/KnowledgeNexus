@@ -23,7 +23,7 @@ export default function KnowledgeCard({ knowledge }: KnowledgeCardProps) {
                 className="absolute inset-0 z-10"
                 aria-label={`View details for ${knowledge.name}'s knowledge entry`}
             />
-            <Card className="w-screen-[96vw] max-w-screen-xl relative transition-all duration-300 ease-in-out group-hover:bg-black/10">
+            <Card className="w-screen-[96vw] max-w-screen-xl relative transition-all duration-300 ease-in-out group-hover:bg-slate-700/10">
                 <CardHeader>
                     <CardTitle className="flex">
                         <div className="font-bold text-xl">

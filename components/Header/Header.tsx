@@ -16,7 +16,7 @@ export default function Header() {
                 </Link>
             </div>
             <div className="ml-auto mr-2 flex space-x-2 my-auto">
-                <Link href={"/"}>
+                <Link href={"/"} className="my-auto">
                     <button type="button" className="p-2 md:h-14 gap-2 group">
                         <div className="flex relative overflow-hidden space-x-1">
                             <div>
@@ -27,7 +27,7 @@ export default function Header() {
                         </div>
                     </button>
                 </Link>
-                <Link href={"/CreateKnowledge"}>
+                <Link href={"/CreateKnowledge"} className="my-auto">
                     <button type="button" className="p-2 md:h-14 group">
                         <div className="flex relative overflow-hidden space-x-1">
                             <div className="my-auto">
