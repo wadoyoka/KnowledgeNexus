@@ -11,8 +11,6 @@ interface KnowledgeCardProps {
 
 export default function KnowledgeCard({ knowledge }: KnowledgeCardProps) {
     const urlMap = new Map(Object.entries(knowledge.urls));
-    const urlKeys = [urlMap.keys()];
-    const urlValues = [urlMap.values()];
     const urls = Array.from(urlMap.entries());
 
     return (
