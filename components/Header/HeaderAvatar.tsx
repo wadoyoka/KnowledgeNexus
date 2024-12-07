@@ -26,7 +26,7 @@ export default function HeaderAvatar() {
         <DropdownMenu>
             <DropdownMenuTrigger asChild>
                 <Avatar className="ml-4 my-auto h-14 w-14 duration-200 hover:opacity-75">
-                    <AvatarImage src="/logo.webp" alt="logo" />
+                    <AvatarImage src={`${session.user.image}`} alt="logo" />
                     <AvatarFallback>Logo</AvatarFallback>
                 </Avatar>
             </DropdownMenuTrigger>

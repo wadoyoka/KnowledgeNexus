@@ -14,3 +14,4 @@ if (!getApps().length) {
 
 export const adminDb = admin.firestore();
 export const firebaseAdmin = admin;
+export default admin;

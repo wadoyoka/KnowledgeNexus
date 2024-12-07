@@ -6,7 +6,7 @@ export async function middleware(request: NextRequest) {
     const token = await getToken({ req: request, secret: process.env.NEXTAUTH_SECRET })
 
     // Define paths that should be accessible without authentication
-    const publicPaths = ['/Signin', '/Signup', '/PasswordReset']
+    const publicPaths = ['/Signin', '/Signup', '/PasswordReset', '/testPhoto']
 
     // Check if the current path is in the public paths
     const isPublicPath = publicPaths.some(path => request.nextUrl.pathname.startsWith(path))

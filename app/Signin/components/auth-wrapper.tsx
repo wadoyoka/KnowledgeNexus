@@ -2,7 +2,7 @@
 
 import { Session } from "next-auth"
 import { useSession } from "next-auth/react"
-import SignInForm from "./SignInForm"
+import GoogleSignIn from "./GoogleSignIn"
 
 interface AuthWrapperProps {
     initialSession: Session | null
@@ -15,6 +15,6 @@ export default function AuthWrapper({ initialSession }: AuthWrapperProps) {
     const currentSession = session ?? initialSession
 
     if (!currentSession) {
-        return <SignInForm />
+        return <GoogleSignIn />
     }
 }

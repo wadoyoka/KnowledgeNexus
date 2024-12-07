@@ -1,39 +1,51 @@
 'use client';
-import { Button } from "@/components/ui/button";
-import { auth } from '@/lib/firebase';
-import Link from 'next/link';
-import { useAuthState } from 'react-firebase-hooks/auth';
+import SubmitButton from "@/components/Buttons/SubmitButton/SubmitButton";
+import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
+import { Input } from "@/components/ui/input";
+import { useSession } from "next-auth/react";
+import { usePathname } from "next/navigation";
+import router from "next/router";
+import { useState } from "react";
 
 export default function UserProfile() {
-    const [user, loading, error] = useAuthState(auth);
+    const { data: session, status } = useSession();
+    const [isLoading, setIsLoading] = useState<boolean>(false);
+    const pathname = usePathname();
 
-    if (loading) {
-        return <div>Loading...</div>;
+    if (status !== "authenticated") {
+        return <p>Loadng...</p>
     }
 
-    if (error) {
-        return <div>Error: {error.message}</div>;
+    if (!session) {
+        router.push(`/Signin?callbackUrl=${pathname}`);
     }
 
-    if (!user) {
-        return <div>ユーザーがログインしていません。</div>;
-    }
 
     return (
-        <div className="max-w-md mx-auto mt-8 p-6 bg-white rounded-lg shadow-md">
-            <h1 className="text-2xl font-bold mb-4">ユーザープロフィール</h1>
-            <p className="mb-4">メールアドレス: {user.email}</p>
-            {user.emailVerified ? (
-                <p className="mb-4 text-green-600">メール認証済み</p>
-            ) : (
-                <p className="mb-4 text-red-600">メール未認証</p>
-            )}
-            <p className="mb-4">ユーザーID: {user.uid}</p>
-            <p className="mb-4">最終ログイン: {user.metadata.lastSignInTime}</p>
-            {/* その他のプロフィール情報 */}
-            <Link href="/delete-account">
-                <Button variant="destructive">アカウント削除</Button>
-            </Link>
+        <div className="flex max-md:flex-col mt-4">
+            <div>
+                <button>
+                    <div className="text-slate-400 duration-200 hover:text-slate-700">
+                        <Avatar className="w-24 h-24">
+                            <AvatarImage src={session.user.image} alt={session.user.email} />
+                            <AvatarFallback>Icon</AvatarFallback>
+                        </Avatar>
+                        <p>変更する</p>
+                    </div>
+                </button>
+            </div>
+            <div className="grow ml-4">
+                <h2 className="font-semibold">ユーザー名</h2>
+                <div className="flex">
+                    <Input
+                        className="bg-white border-2 mr-2"
+                    />
+                    <SubmitButton preText={"変更する"} postText={"変更中"} disabled={isLoading} />
+                </div>
+                <h2 className="font-semibold">メールアドレス</h2>
+                <p>{session.user.email}</p>
+            </div>
+
         </div>
     );
 }

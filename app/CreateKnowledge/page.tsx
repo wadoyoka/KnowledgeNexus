@@ -1,4 +1,4 @@
-import CreateKnowledgeForm from "@/components/CreateKnowledgeForm";
+import CreateKnowledgeForm from "@/app/CreateKnowledge/components/CreateKnowledgeForm";
 
 export default function Home() {
     return (

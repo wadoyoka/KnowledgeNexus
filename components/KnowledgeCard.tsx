@@ -1,6 +1,7 @@
 import { Knowledge } from "@/types/KnowledgeResponse";
 import { JSTTimeDisplay } from "@/utils/JSTTimeDisplay";
 import Link from "next/link";
+import { Avatar, AvatarFallback, AvatarImage } from "./ui/avatar";
 import { Card, CardContent, CardHeader, CardTitle } from "./ui/card";
 
 interface KnowledgeCardProps {
@@ -18,30 +19,36 @@ export default function KnowledgeCard({ knowledge }: KnowledgeCardProps) {
 
     return (
         <div className="relative group">
-            <Link 
+            <Link
                 href={`/knowledge/${knowledge.id}`}
                 className="absolute inset-0 z-10"
                 aria-label={`View details for ${knowledge.name}'s knowledge entry`}
             />
             <Card className="w-screen-[96vw] max-w-screen-xl relative transition-all duration-300 ease-in-out group-hover:bg-slate-700/10">
                 <CardHeader>
-                    <CardTitle className="flex">
-                        <div className="font-bold text-xl">
-                            {knowledge.name}
-                        </div>
-                        <div className="ml-auto text-slate-400 font-light">
-                            {JSTTimeDisplay(knowledge.createdAt)}
-                        </div>
-                    </CardTitle>
+                    <div className="flex">
+                        <Avatar className="my-auto h-10 w-10 duration-200 hover:opacity-75">
+                            <AvatarImage src={`${knowledge.image}`} alt="logo" />
+                            <AvatarFallback>Logo</AvatarFallback>
+                        </Avatar>
+                        <CardTitle className="flex grow ml-2 my-auto">
+                            <div className="font-bold text-xl">
+                                {knowledge.name}
+                            </div>
+                            <div className="ml-auto text-slate-400 font-light">
+                                {JSTTimeDisplay(knowledge.createdAt)}
+                            </div>
+                        </CardTitle>
+                    </div>
                 </CardHeader>
                 <CardContent className="">
                     <ul className="list-disc pl-4 mb-2">
                         {urls.map(([key, value]) => (
                             <li key={key}>
-                                <Link 
-                                    href={key} 
-                                    rel="noopener noreferrer" 
-                                    target="_blank" 
+                                <Link
+                                    href={key}
+                                    rel="noopener noreferrer"
+                                    target="_blank"
                                     className="relative z-20 text-blue-600 visited:text-purple-600 hover:underline"
                                     onClick={(e) => e.stopPropagation()}
                                 >

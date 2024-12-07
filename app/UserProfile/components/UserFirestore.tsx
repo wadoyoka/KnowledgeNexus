@@ -34,8 +34,10 @@ export default function UserFirestoreCollection() {
 
     const transformToKnowledge = (doc: QueryDocumentSnapshot<DocumentData, DocumentData>): Knowledge => ({
         id: doc.id,
+        uid: doc.data().uid || '',
         name: doc.data().name || '',
         email: doc.data().email || '',
+        image: doc.data().image || '',
         urls: doc.data().urls || {},
         text_field: doc.data().text_field || '',
         createdAt: doc.data().createdAt ? doc.data().createdAt.toDate().toISOString() : '',

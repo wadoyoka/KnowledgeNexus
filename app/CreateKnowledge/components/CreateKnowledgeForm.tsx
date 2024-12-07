@@ -12,10 +12,11 @@ import { usePathname } from "next/navigation"
 import router from "next/router"
 import { useState } from 'react'
 import * as z from "zod"
-import SubmitButton from "./Buttons/SubmitButton/SubmitButton"
-import { Button } from "./ui/button"
-import { Checkbox } from "./ui/checkbox"
-import { Dialog, DialogClose, DialogContent, DialogDescription, DialogFooter, DialogHeader, DialogTitle, DialogTrigger } from "./ui/dialog"
+import SubmitButton from "../../../components/Buttons/SubmitButton/SubmitButton"
+import { Button } from "../../../components/ui/button"
+import { Checkbox } from "../../../components/ui/checkbox"
+import { Dialog, DialogClose, DialogContent, DialogDescription, DialogFooter, DialogHeader, DialogTitle, DialogTrigger } from "../../../components/ui/dialog"
+import CreateKnowledgeAvatar from "./CreateKnowledgeAvatar"
 
 
 export default function CreateKnowledgeForm() {
@@ -68,9 +69,9 @@ export default function CreateKnowledgeForm() {
       }
     } else if (url === "") {
       setErrorMessage("URLの欄に何も入力されてません")
-    } else if (urls.includes(url) && index === urls.findIndex((element) => element === url) &&titles[index] === title) {
+    } else if (urls.includes(url) && index === urls.findIndex((element) => element === url) && titles[index] === title) {
       setErrorMessage("")
-    } else if (urls.includes(url)  && index === urls.findIndex((element) => element === url) && titles[index] !== title) {
+    } else if (urls.includes(url) && index === urls.findIndex((element) => element === url) && titles[index] !== title) {
       try {
         const validatedData = urlSchema.parse({
           url,
@@ -136,11 +137,13 @@ export default function CreateKnowledgeForm() {
     event.preventDefault()
     setIsLoading(true);
     const knowledgeSchema = z.object({
+      uid: z.string(),
       name: z.string().min(1, "名前は一文字以上にしてください。").max(100, "名前は１００文字までにしてください。"),
       email: z.string().email("有効なメールアドレスを入力してください").refine(
         (email) => email.endsWith("@cps.im.dendai.ac.jp"),
         "メールアドレスは @cps.im.dendai.ac.jp で終わる必要があります"
       ),
+      image: z.string().url(),
       bufUrls: z.array(z.string().url().max(2000)).min(1, "URLは最低一つ必要です").max(10, "URLは最大10個までです"),
       message: z.string().min(10, "メモ内容は１０文字以上入力してください。").max(500, "メモ内容は５００文字までです。"),
     });
@@ -159,15 +162,19 @@ export default function CreateKnowledgeForm() {
       const formData = new FormData(event.currentTarget)
 
       const validatedData = knowledgeSchema.parse({
-        name: session.user.id,
+        uid: session.user.id,
+        name: session.user.name,
         email: session.user.email,
+        image: session.user.image,
         bufUrls: urls,
         message: formData.get('message')
       });
 
       const data = {
+        uid: validatedData.uid,
         name: validatedData.name,
         email: validatedData.email,
+        image: validatedData.image,
         urls: keyValue,
         message: validatedData.message,
       }
@@ -196,7 +203,10 @@ export default function CreateKnowledgeForm() {
   return (
     <Card className="w-full max-w-md mx-auto ">
       <CardHeader>
-        <CardTitle>{session.user.email}</CardTitle>
+        <div className="flex">
+          <CreateKnowledgeAvatar />
+          <CardTitle className="ml-4 my-auto">{session.user.name}</CardTitle>
+        </div>
       </CardHeader>
       <CardContent>
         <form onSubmit={handleSubmit} className="space-y-4">
