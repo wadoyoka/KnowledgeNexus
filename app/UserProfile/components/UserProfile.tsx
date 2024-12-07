@@ -5,10 +5,12 @@ import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { Input } from "@/components/ui/input";
 import { updateKnowledgeNexusNames } from "@/utils/firebase/updateKnowledgeNexusNames";
 import { uploadProfileImageToStorage } from "@/utils/firebase/uploadProfileImage";
+import { handleSignOut } from "@/utils/userSignOut";
 import { AlertCircle } from "lucide-react";
 import { Session } from "next-auth";
 import { useSession } from "next-auth/react";
 import { useRef, useState } from "react";
+import { z } from "zod";
 
 interface UserProfileProps {
     session: Session;
@@ -53,11 +55,14 @@ export default function UserProfile({ session }: UserProfileProps) {
 
     const handleNameChange = async () => {
         setIsLoading(true);
+        const nameSchema = z.string().min(1, "名前は一文字以上にしてください。").max(100, "名前は１００文字までにしてください。");
         if (bufUserName === username) {
             setIsLoading(false);
+            setError("ユーザーネームに変更はありませんでした。")
             return;
         } else {
             try {
+                nameSchema.parse(username);
                 const updatedCount = await updateKnowledgeNexusNames(session.user.id, username);
                 console.log(`Updated ${updatedCount} documents`);
                 if (sessionData) {
@@ -71,8 +76,14 @@ export default function UserProfile({ session }: UserProfileProps) {
                 }
                 // Update the local state
                 setBufUserName(username);
+                handleSignOut();
             } catch (error) {
+                if (error instanceof z.ZodError) {
+                    // 最初のエラーメッセージを返す
+                    setError(error.errors[0].message);
+                }
                 console.error('Failed to update documents:', error);
+
                 // Handle the error appropriately (e.g., show user feedback, log to monitoring service)
             } finally {
                 setIsLoading(false);
@@ -101,13 +112,6 @@ export default function UserProfile({ session }: UserProfileProps) {
                             <AvatarFallback>Icon</AvatarFallback>
                         </Avatar>
                         <p> {isUploading ? '変更中...' : '変更する'}</p>
-                        {error && (
-                            <Alert variant="destructive" className="mt-4">
-                                <AlertCircle className="h-4 w-4" />
-                                <AlertTitle>エラー</AlertTitle>
-                                <AlertDescription>{error}</AlertDescription>
-                            </Alert>
-                        )}
                     </div>
                 </button>
             </div>
@@ -127,6 +131,14 @@ export default function UserProfile({ session }: UserProfileProps) {
                 </div>
                 <h2 className="font-semibold">メールアドレス</h2>
                 <p>{session.user.email}</p>
+                <p className="text-slate-400">※ユーザー名を変更すると、一度ログアウトします。</p>
+                {error && (
+                    <Alert variant="destructive" className="mt-4">
+                        <AlertCircle className="h-4 w-4" />
+                        <AlertTitle>エラー</AlertTitle>
+                        <AlertDescription>{error}</AlertDescription>
+                    </Alert>
+                )}
             </div>
 
         </div>

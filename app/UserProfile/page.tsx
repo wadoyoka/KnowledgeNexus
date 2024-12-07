@@ -11,8 +11,8 @@ export default async function ProfilePage() {
         redirect("/Signin?callbackUrl=UserProfile")
     }
     return (
-        <div className="min-h-screen bg-slate-200 flex flex-col py-12 sm:px-6 lg:px-8">
-            <Tabs defaultValue="account" className="">
+        <div className="min-h-screen bg-slate-200 flex flex-col py-12 px-2 sm:px-6 lg:px-8">
+            <Tabs defaultValue="profile" className="">
                 <TabsList>
                     <TabsTrigger value="profile">プロフィール</TabsTrigger>
                     <TabsTrigger value="knowledgePost">自分の投稿</TabsTrigger>

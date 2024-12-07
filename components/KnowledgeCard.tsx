@@ -13,9 +13,6 @@ export default function KnowledgeCard({ knowledge }: KnowledgeCardProps) {
     const urlKeys = [urlMap.keys()];
     const urlValues = [urlMap.values()];
     const urls = Array.from(urlMap.entries());
-    console.log(urlMap);
-    console.log(urlKeys);
-    console.log(urlValues)
 
     return (
         <div className="relative group">
