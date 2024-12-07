@@ -5,7 +5,7 @@ import { Dialog, DialogClose, DialogContent, DialogDescription, DialogFooter, Di
 import { DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuTrigger } from "@/components/ui/dropdown-menu";
 import { useToast } from "@/hooks/use-toast";
 import deleteDocument from "@/utils/firebase/deleteDocument";
-import { EllipsisVertical, Trash2 } from "lucide-react";
+import { EllipsisVertical, PenTool, Trash2 } from "lucide-react";
 import { useSession } from "next-auth/react";
 import { useRouter } from "next/navigation";
 import { useState } from "react";
@@ -16,7 +16,7 @@ interface DeleteContentEllipsisVerticalProps {
     userId: string;
 }
 
-export default function DeleteContentEllipsisVertical({ contentId, userId}: DeleteContentEllipsisVerticalProps) {
+export default function DeleteContentEllipsisVertical({ contentId, userId }: DeleteContentEllipsisVerticalProps) {
     const { data: session, status } = useSession();
     const [isSubmitting, setIsSubmitting] = useState<boolean>(false);
     const router = useRouter();
@@ -64,6 +64,10 @@ export default function DeleteContentEllipsisVertical({ contentId, userId}: Dele
                 <DropdownMenuItem onClick={() => setIsDialogOpen(true)}>
                     <Trash2 className="mr-2 h-4 w-4" />
                     <span>削除</span>
+                </DropdownMenuItem>
+                <DropdownMenuItem onClick={() => router.push(`/UpdateKnowledge/${contentId}`)}>
+                    <PenTool className="mr-2 h-4 w-4" />
+                    <span>編集</span>
                 </DropdownMenuItem>
             </DropdownMenuContent>
 
