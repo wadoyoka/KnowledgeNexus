@@ -3,15 +3,15 @@ import KnowledgeCards from '@/components/KnowledgeCards';
 import { firestore } from '@/lib/firebase';
 import { Knowledge } from '@/types/KnowledgeResponse';
 import { collection, DocumentData, limit, query, QueryDocumentSnapshot, where } from 'firebase/firestore';
-import { useSession } from 'next-auth/react';
-import { usePathname, useRouter } from 'next/navigation';
-import { useEffect } from 'react';
+import { Session } from 'next-auth';
 import { useCollection } from 'react-firebase-hooks/firestore';
 
-export default function UserFirestoreCollection() {
-    const { data: session, status } = useSession();
-    const pathname = usePathname();
-    const router = useRouter();
+interface UserFirestoreCollectionProps {
+    session: Session;
+}
+
+
+export default function UserFirestoreCollection({ session }: UserFirestoreCollectionProps) {
 
     const [value, loading, error] = useCollection(
         session?.user?.email
@@ -26,11 +26,7 @@ export default function UserFirestoreCollection() {
         }
     );
 
-    useEffect(() => {
-        if (status === "unauthenticated") {
-            router.push(`/Signin?callbackUrl=${pathname}`);
-        }
-    }, [status, router, pathname]);
+
 
     const transformToKnowledge = (doc: QueryDocumentSnapshot<DocumentData, DocumentData>): Knowledge => ({
         id: doc.id,

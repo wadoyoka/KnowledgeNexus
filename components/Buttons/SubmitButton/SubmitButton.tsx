@@ -1,5 +1,5 @@
 import { Button } from "@/components/ui/button";
-import { Loader2 } from "lucide-react";
+import { Loader2 } from 'lucide-react';
 
 interface SubmitButtonProps {
     /** ボタンがクリックされる前に表示されるテキスト */
@@ -53,13 +53,18 @@ interface SubmitButtonProps {
     /** 無効時にローダーをテキストの右側に配置するかどうか */
     isLoaderRight?: boolean;
 
-    /** 無効時にローダーをテキストの右側に配置するかどうか */
+    /** ローダーのサイズ */
     LoaderSize?: number;
+
+    /** ボタンがクリックされたときに呼び出される関数 */
+    onClick?: () => void;
+
+    type?: "submit" | "reset" | "button" | undefined;
 }
 
-export default function SubmitButton({ preText, postText, disabled, width, height, padding = "px-4 py-2", fontSize, fontweight, baseColor = "bg-sky-500", hoverColor = "hover:bg-sky-500/75", baseTextColor = "text-white", hoverTextColor = "text-white", borderRadius, borderWidth, borderColor, borderStyle, isLoaderRight, LoaderSize }: SubmitButtonProps) {
+export default function SubmitButton({ preText, postText, disabled, width, height, padding = "px-4 py-2", fontSize, fontweight, baseColor = "bg-sky-500", hoverColor = "hover:bg-sky-500/75", baseTextColor = "text-white", hoverTextColor = "text-white", borderRadius, borderWidth, borderColor, borderStyle, isLoaderRight, LoaderSize, type = "submit", onClick }: SubmitButtonProps) {
     return (
-        <Button type="submit" className={`${width} ${height} ${padding} ${fontSize} ${fontweight} ${baseColor} ${hoverColor} ${baseTextColor} ${hoverTextColor} ${borderRadius} ${borderWidth} ${borderColor} ${borderStyle}`} disabled={disabled}>
+        <Button type={type} className={`${width} ${height} ${padding} ${fontSize} ${fontweight} ${baseColor} ${hoverColor} ${baseTextColor} ${hoverTextColor} ${borderRadius} ${borderWidth} ${borderColor} ${borderStyle}`} disabled={disabled} onClick={onClick}>
             {disabled ? (
                 <>
                     {isLoaderRight
@@ -79,3 +84,4 @@ export default function SubmitButton({ preText, postText, disabled, width, heigh
         </Button>
     )
 }
+
