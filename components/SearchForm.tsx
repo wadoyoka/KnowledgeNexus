@@ -60,7 +60,7 @@ export function SearchForm() {
             />
           </div>
           <div className='my-auto'>
-            <button type='submit' className='font-extrabold text-xl bg-sky-500 text-white w-24 h-12 md:h-16 rounded-lg hidden md:block'>
+            <button type='submit' className='font-extrabold text-xl bg-sky-500 text-white w-24 h-12 md:h-16 rounded-lg hidden md:block duration-200 hover:bg-sky-700'>
               {isLoading ? <p>検索中</p> : <p>検索</p>}
             </button>
           </div>
