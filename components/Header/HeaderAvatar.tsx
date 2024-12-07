@@ -2,9 +2,8 @@
 import { handleSignOut } from "@/utils/userSignOut";
 import { LogOut, User } from "lucide-react";
 import { useSession } from "next-auth/react";
-import Link from "next/link";
-import { usePathname } from "next/navigation";
-import router from "next/router";
+import { usePathname, useRouter } from "next/navigation";
+import { useState } from "react";
 import { Avatar, AvatarFallback, AvatarImage } from "../ui/avatar";
 import { DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuTrigger } from "../ui/dropdown-menu";
 
@@ -12,6 +11,8 @@ import { DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuTrigge
 export default function HeaderAvatar() {
     const { data: session, status } = useSession();
     const pathname = usePathname();
+    const router = useRouter();
+    const [isOpen, setIsOpen] = useState(false);
 
     if (status !== "authenticated") {
         return <p>Loadng...</p>
@@ -21,9 +22,14 @@ export default function HeaderAvatar() {
         router.push(`/Signin?callbackUrl=${pathname}`);
     }
 
+    const handleUserProfile = () =>{
+        setIsOpen(false);
+        router.push("/UserProfile");
+    }
+
 
     return (
-        <DropdownMenu>
+        <DropdownMenu open={isOpen} onOpenChange={setIsOpen}>
             <DropdownMenuTrigger asChild>
                 <Avatar className="ml-4 my-auto h-14 w-14 duration-200 hover:opacity-75">
                     <AvatarImage src={`${session.user.image}`} alt="logo" />
@@ -31,15 +37,16 @@ export default function HeaderAvatar() {
                 </Avatar>
             </DropdownMenuTrigger>
             <DropdownMenuContent side="bottom" className="mr-10">
-                <DropdownMenuItem>
-                    <Link href={"/UserProfile"}>
-                        <div className="flex my-auto">
-                            <User />
-                            <span className="ml-2">プロフィール</span>
-                        </div>
-                    </Link>
+                <DropdownMenuItem onSelect={handleUserProfile}>
+                    <div className="flex my-auto">
+                        <User />
+                        <span className="ml-2">プロフィール</span>
+                    </div>
                 </DropdownMenuItem>
-                <DropdownMenuItem onClick={handleSignOut}>
+                <DropdownMenuItem onSelect={() => {
+                    setIsOpen(false);
+                    handleSignOut();
+                }}>
                     <div className="flex">
                         <LogOut />
                         <span className="ml-2">ログアウト</span>

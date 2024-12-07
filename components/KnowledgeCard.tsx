@@ -1,6 +1,7 @@
 import { Knowledge } from "@/types/KnowledgeResponse";
 import { JSTTimeDisplay } from "@/utils/JSTTimeDisplay";
 import Link from "next/link";
+import DeleteContentEllipsisVertical from "./ellipsis-vertical";
 import { Avatar, AvatarFallback, AvatarImage } from "./ui/avatar";
 import { Card, CardContent, CardHeader, CardTitle } from "./ui/card";
 
@@ -21,7 +22,7 @@ export default function KnowledgeCard({ knowledge }: KnowledgeCardProps) {
                 className="absolute inset-0 z-10"
                 aria-label={`View details for ${knowledge.name}'s knowledge entry`}
             />
-            <Card className="w-screen-[96vw] max-w-screen-xl relative transition-all duration-300 ease-in-out group-hover:bg-slate-700/10">
+            <Card className="w-screen-[96vw] max-w-screen-xl relative transition-all duration-300 ease-in-out group-hover:bg-slate-200/10">
                 <CardHeader>
                     <div className="flex">
                         <Avatar className="my-auto h-10 w-10 duration-200 hover:opacity-75">
@@ -32,8 +33,13 @@ export default function KnowledgeCard({ knowledge }: KnowledgeCardProps) {
                             <div className="font-bold text-xl">
                                 {knowledge.name}
                             </div>
-                            <div className="ml-auto text-slate-400 font-light">
-                                {JSTTimeDisplay(knowledge.createdAt)}
+                            <div className="ml-auto flex">
+                                <div className="my-auto text-slate-400 font-light">
+                                    {JSTTimeDisplay(knowledge.createdAt)}
+                                </div>
+                                <div className="ml-2 my-auto z-20">
+                                    <DeleteContentEllipsisVertical contentId={knowledge.id} userId={knowledge.uid} />
+                                </div>
                             </div>
                         </CardTitle>
                     </div>
