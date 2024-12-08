@@ -1,18 +1,16 @@
 'use client';
 import { Alert, AlertDescription, AlertTitle } from "@/components/ui/alert";
 import { Button } from "@/components/ui/button";
-import { Input } from "@/components/ui/input";
-import { Label } from "@/components/ui/label";
 import { auth } from '@/lib/firebase';
+import { deleteUserData } from '@/utils/firebase/deleteUserData';
 import { userSignOutNextAuth } from "@/utils/nextAuth/SignOut";
-import { deleteUser, EmailAuthProvider, reauthenticateWithCredential } from 'firebase/auth';
+import { deleteUser, GoogleAuthProvider, reauthenticateWithPopup } from 'firebase/auth';
 import { AlertCircle } from 'lucide-react';
 import { useState } from 'react';
 import { useAuthState } from 'react-firebase-hooks/auth';
 
 export default function DeleteAccount() {
   const [user, loading] = useAuthState(auth);
-  const [password, setPassword] = useState('');
   const [error, setError] = useState<string | null>(null);
   const [isDeleting, setIsDeleting] = useState(false);
 
@@ -24,13 +22,21 @@ export default function DeleteAccount() {
     setError(null);
 
     try {
-      const credential = EmailAuthProvider.credential(user.email!, password);
-      await reauthenticateWithCredential(user, credential);
+      const provider = new GoogleAuthProvider();
+      provider.setCustomParameters({
+        hd: 'cps.im.dendai.ac.jp'
+      });
+      await reauthenticateWithPopup(user, provider);
+      
+      // Delete user data from Firestore and Storage
+      await deleteUserData(user.uid);
+
+      // Delete the user account
       await deleteUser(user);
-      userSignOutNextAuth();
+      await userSignOutNextAuth();
     } catch (error) {
       console.error('Error deleting account:', error);
-      setError('アカウントの削除に失敗しました。パスワードを確認してください。');
+      setError('アカウントの削除に失敗しました。もう一度お試しください。');
     } finally {
       setIsDeleting(false);
     }
@@ -50,17 +56,6 @@ export default function DeleteAccount() {
         </AlertDescription>
       </Alert>
       <form onSubmit={handleDeleteAccount}>
-        <div className="mb-4">
-          <Label htmlFor="password">パスワードを確認</Label>
-          <Input
-            id="password"
-            type="password"
-            value={password}
-            onChange={(e) => setPassword(e.target.value)}
-            required
-            className="mt-1"
-          />
-        </div>
         {error && (
           <Alert variant="destructive" className="mb-4">
             <AlertCircle className="h-4 w-4" />
@@ -69,7 +64,7 @@ export default function DeleteAccount() {
           </Alert>
         )}
         <Button type="submit" variant="destructive" disabled={isDeleting}>
-          {isDeleting ? '処理中...' : 'アカウントを削除'}
+          {isDeleting ? '処理中...' : 'Googleで再認証してアカウントを削除'}
         </Button>
       </form>
     </div>

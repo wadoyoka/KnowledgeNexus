@@ -2,6 +2,7 @@
 import SubmitButton from "@/components/Buttons/SubmitButton/SubmitButton";
 import { Alert, AlertDescription, AlertTitle } from "@/components/ui/alert";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
+import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { updateKnowledgeNexusNames } from "@/utils/firebase/updateKnowledgeNexusNames";
 import { uploadProfileImageToStorage } from "@/utils/firebase/uploadProfileImage";
@@ -9,6 +10,7 @@ import { handleSignOut } from "@/utils/userSignOut";
 import { AlertCircle } from "lucide-react";
 import { Session } from "next-auth";
 import { useSession } from "next-auth/react";
+import { useRouter } from "next/navigation";
 import { useRef, useState } from "react";
 import { z } from "zod";
 
@@ -25,6 +27,7 @@ export default function UserProfile({ session }: UserProfileProps) {
     const [error, setError] = useState<string | null>(null);
     const fileInputRef = useRef<HTMLInputElement>(null);
     const { data: sessionData, update } = useSession();
+    const router = useRouter();
 
     const handleUploadComplete = (url: string) => {
         setProfileImageUrl(url);
@@ -131,6 +134,7 @@ export default function UserProfile({ session }: UserProfileProps) {
                 </div>
                 <h2 className="font-semibold">メールアドレス</h2>
                 <p>{session.user.email}</p>
+                <Button variant="destructive" onClick={() => router.push("/DeleteAccount")}>アカウント削除</Button>
                 <p className="text-slate-400">※ユーザー名を変更すると、一度ログアウトします。</p>
                 {error && (
                     <Alert variant="destructive" className="mt-4">
