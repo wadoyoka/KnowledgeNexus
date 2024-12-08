@@ -22,7 +22,7 @@ export default async function ProfilePage() {
                 </TabsContent>
                 <TabsContent value="knowledgePost" className='grow w-full'>
                     <div>
-                        <UserFirestoreCollection session={session} />
+                        <UserFirestoreCollection/>
                     </div>
                 </TabsContent>
             </Tabs>
