@@ -5,10 +5,9 @@ import { firestore } from '@/lib/firebase';
 import { Knowledge } from '@/types/KnowledgeResponse';
 import { collection, DocumentData, getDocs, limit, query, QueryDocumentSnapshot, startAfter, where } from 'firebase/firestore';
 import { useSession } from 'next-auth/react';
-import { createContext, useEffect, useState } from 'react';
+import { useEffect, useState } from 'react';
 
 const ITEMS_PER_PAGE = 10;
-const KnowledgeContext = createContext<Knowledge[]>([]);
 
 export default function UserFirestoreCollection() {
     const { data: session, status } = useSession();
@@ -73,10 +72,9 @@ export default function UserFirestoreCollection() {
     };
 
     useEffect(() => {
-        if (session?.user?.id) {
-            fetchKnowledges();
-        }
-    }, [session?.user?.id]);
+        fetchKnowledges();
+        // eslint-disable-next-line react-hooks/exhaustive-deps
+    }, []);
 
     const handleLoadMore = () => {
         fetchKnowledges(true);
@@ -90,9 +88,7 @@ export default function UserFirestoreCollection() {
         <div>
             {error && <span>Error: {error}</span>}
             {loading && <span>Loading...</span>}
-            <KnowledgeContext.Provider value={knowledges}>
-                <KnowledgeCards knowledges={knowledges} />
-            </KnowledgeContext.Provider>
+            <KnowledgeCards knowledges={knowledges} />
             {!isLastPage && (
                 <Button
                     onClick={handleLoadMore}
