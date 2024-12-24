@@ -18,7 +18,14 @@ export async function POST(req: Request) {
             const Knowledges: Knowledge[] = JSON.parse(data.data.data)
 
             for await (const Knowledge of Knowledges) {
-                docContext += Knowledge.text_field + " ";
+                let urlData = ""
+                const urlMap = new Map(Object.entries(Knowledge.urls));
+                const urls = Array.from(urlMap.entries());
+                for await (const url of urls) {
+                    urlData += "URL:"+url[0]+"URLDescription:"+url[1] +" "
+                }
+
+                docContext += Knowledge.text_field + " " + "関連URL:" + urlData + " ";
             }
 
             const template = {
@@ -27,6 +34,7 @@ export async function POST(req: Request) {
                     あなたは東京電機大学の岩井研究室について詳しいです。
                     コンテキストで受け取った情報を元に、岩井研究室についての質問に答えることができます。
                     これらのコンテキストは岩井研究室のデータベースから抽出されました。
+                    レスポンスはHTML要素にしてください。
                     もしない情報がある場合はあなたの情報を使わないでください。
                     レスポンスに画像は含めないでください。
                     ----------------

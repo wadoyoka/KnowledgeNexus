@@ -26,6 +26,8 @@
     "clsx": "^2.1.1",
     "firebase": "^11.0.2",
     "firebase-admin": "^13.0.1",
+    "html-react-parser": "^5.2.1",
+    "isomorphic-dompurify": "^2.19.0",
     "lucide-react": "^0.462.0",
     "next": "14.2.17",
     "next-auth": "^4.24.10",

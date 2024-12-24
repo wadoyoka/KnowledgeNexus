@@ -1,4 +1,4 @@
-import { PenTool, Search } from "lucide-react";
+import { MessageCircleMore, PenTool } from "lucide-react";
 import Link from "next/link";
 import { Avatar, AvatarFallback, AvatarImage } from "../ui/avatar";
 import HeaderAvatar from "./HeaderAvatar";
@@ -16,13 +16,24 @@ export default function Header() {
                 </Link>
             </div>
             <div className="ml-auto mr-2 flex space-x-2 my-auto">
-                <Link href={"/"} className="my-auto">
+                {/* <Link href={"/"} className="my-auto">
                     <button type="button" className="p-2 md:h-14 gap-2 group">
                         <div className="flex relative overflow-hidden space-x-1">
                             <div>
                                 <Search size={26} />
                             </div>
                             <p className="my-auto hidden text-xl font-bold md:block hover:text-accent-foreground">検索する</p>
+                            <span className="hidden md:block absolute bottom-0 left-1/2 w-0 h-0.5 bg-accent-foreground transition-all group-hover:w-full group-hover:left-0"></span>
+                        </div>
+                    </button>
+                </Link> */}
+                <Link href={"/aiChat"} className="my-auto">
+                    <button type="button" className="p-2 md:h-14 gap-2 group">
+                        <div className="flex relative overflow-hidden space-x-1">
+                            <div>
+                                <MessageCircleMore size={26} />
+                            </div>
+                            <p className="my-auto hidden text-xl font-bold md:block hover:text-accent-foreground">Knowledge AI</p>
                             <span className="hidden md:block absolute bottom-0 left-1/2 w-0 h-0.5 bg-accent-foreground transition-all group-hover:w-full group-hover:left-0"></span>
                         </div>
                     </button>
