@@ -6,7 +6,7 @@ import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { ScrollArea } from "@/components/ui/scroll-area";
 import { useChat } from "ai/react";
-import parse, { Element, HTMLReactParserOptions, domToReact } from 'html-react-parser';
+import parse, { DOMNode, Element, HTMLReactParserOptions, domToReact } from 'html-react-parser';
 import DOMPurify from 'isomorphic-dompurify';
 import { Send } from 'lucide-react';
 import { useState } from 'react';
@@ -40,13 +40,13 @@ export default function Home() {
                 if (domNode instanceof Element && domNode.name === 'a' && domNode.attribs) {
                     const href = domNode.attribs.href;
                     return (
-                        <a 
-                            href={href} 
-                            target="_blank" 
-                            rel="noopener noreferrer" 
+                        <a
+                            href={href}
+                            target="_blank"
+                            rel="noopener noreferrer"
                             className="text-blue-500 hover:underline"
                         >
-                            {domToReact(domNode.children as any)}
+                            {domToReact(domNode.children as DOMNode[])}
                         </a>
                     );
                 }
@@ -79,8 +79,8 @@ export default function Home() {
                             )}
                             <div
                                 className={`max-w-[70%] p-3 rounded-2xl ${message.role === 'assistant'
-                                        ? 'bg-white text-gray-800 rounded-bl-none'
-                                        : 'bg-blue-500 text-white rounded-br-none'
+                                    ? 'bg-white text-gray-800 rounded-bl-none'
+                                    : 'bg-blue-500 text-white rounded-br-none'
                                     }`}
                             >
                                 {parseAndSanitize(message.content)}
