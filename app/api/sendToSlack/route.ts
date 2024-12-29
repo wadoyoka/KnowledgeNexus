@@ -1,7 +1,7 @@
 import { IncomingWebhook } from "@slack/webhook";
 import { NextResponse } from "next/server";
 
-const webhookUrl = process.env.NEXT_PUBLIC_SLACK_WEBHOOK_URL;
+const webhookUrl = process.env.SLACK_WEBHOOK_URL;
 
 if (!webhookUrl) {
   throw new Error("Slack Webhook URL is not defined in environment variables.");
