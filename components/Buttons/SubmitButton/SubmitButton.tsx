@@ -1,5 +1,5 @@
-import { Button } from "@/components/ui/button";
-import { Loader2 } from 'lucide-react';
+import { Loader2, LucideIcon } from 'lucide-react';
+import { type IconType } from 'react-icons';
 
 interface SubmitButtonProps {
     /** ボタンがクリックされる前に表示されるテキスト */
@@ -60,28 +60,75 @@ interface SubmitButtonProps {
     onClick?: () => void;
 
     type?: "submit" | "reset" | "button" | undefined;
+
+    /** Optional Lucide React icon or React Icons icon to display on the button */
+    icon?: LucideIcon | IconType;
+
+    /** Position of the icon (left or right) */
+    iconPosition?: 'left' | 'right';
+
+    /** アイコンのサイズ（デフォルトはLoaderSizeと同じ） */
+    iconSize?: number;
 }
 
-export default function SubmitButton({ preText, postText, disabled, width, height, padding = "px-4 py-2", fontSize, fontweight, baseColor = "bg-sky-500", hoverColor = "hover:bg-sky-500/75", baseTextColor = "text-white", hoverTextColor = "text-white", borderRadius, borderWidth, borderColor, borderStyle, isLoaderRight, LoaderSize, type = "submit", onClick }: SubmitButtonProps) {
+export default function SubmitButton({ 
+    preText, 
+    postText, 
+    disabled, 
+    width, 
+    height, 
+    padding = "px-4 py-2", 
+    fontSize, 
+    fontweight, 
+    baseColor = "bg-sky-500", 
+    hoverColor = "hover:bg-sky-500/75", 
+    baseTextColor = "text-white", 
+    hoverTextColor = "group-hover:text-white", 
+    borderRadius = "rounded-md", 
+    borderWidth, 
+    borderColor, 
+    borderStyle, 
+    isLoaderRight, 
+    LoaderSize = 18, 
+    type = "submit", 
+    onClick, 
+    icon: Icon, 
+    iconPosition = 'left',
+    iconSize,
+}: SubmitButtonProps) {
+    const IconComponent = Icon ? (
+        <Icon size={iconSize ?? LoaderSize} className={iconPosition === 'left' ? 'mr-2' : 'ml-2'} />
+    ) : null;
+
     return (
-        <Button type={type} className={`${width} ${height} ${padding} ${fontSize} ${fontweight} ${baseColor} ${hoverColor} ${baseTextColor} ${hoverTextColor} ${borderRadius} ${borderWidth} ${borderColor} ${borderStyle}`} disabled={disabled} onClick={onClick}>
+        <button
+            type={type}
+            className={`${width} ${height} ${padding} ${fontSize} ${fontweight} ${baseColor} ${hoverColor} ${baseTextColor} ${hoverTextColor} ${borderRadius} ${borderWidth} ${borderColor} ${borderStyle} group flex items-center justify-center duration-300`}
+            disabled={disabled}
+            onClick={onClick}
+        >
             {disabled ? (
                 <>
-                    {isLoaderRight
-                        ? <div className="flex">
-                            {`${postText}`}
-                            <Loader2 size={LoaderSize} className="my-auto ml-2 h-4 w-4 animate-spin" />
-                        </div>
-                        : <div className="flex">
-                            <Loader2 size={LoaderSize} className="my-auto mr-2 h-4 w-4 animate-spin" />
-                            {`${postText}`}
-                        </div>
-                    }
+                    {isLoaderRight ? (
+                        <>
+                            <span className={`${baseTextColor} ${hoverTextColor} duration-200`}>{postText}</span>
+                            <Loader2 size={LoaderSize} className="ml-2 animate-spin" />
+                        </>
+                    ) : (
+                        <>
+                            <Loader2 size={LoaderSize} className="mr-2 animate-spin" />
+                            <span className={`${baseTextColor} ${hoverTextColor} duration-200`}>{postText}</span>
+                        </>
+                    )}
                 </>
             ) : (
-                `${preText}`
+                <>
+                    {iconPosition === 'left' && IconComponent}
+                    <span className={`${baseTextColor} ${hoverTextColor} duration-200`}>{preText}</span>
+                    {iconPosition === 'right' && IconComponent}
+                </>
             )}
-        </Button>
-    )
+        </button>
+    );
 }
 

@@ -73,7 +73,7 @@ export default function Home() {
                         >
                             {message.role === 'assistant' && (
                                 <Avatar className="w-8 h-8 mr-2">
-                                    <AvatarImage src="/placeholder.svg" alt="AI" />
+                                    <AvatarImage src="/logo.webp" alt="AI" className='bg-white p-1' />
                                     <AvatarFallback>AI</AvatarFallback>
                                 </Avatar>
                             )}

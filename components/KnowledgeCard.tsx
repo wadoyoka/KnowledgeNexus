@@ -15,12 +15,13 @@ export default function KnowledgeCard({ knowledge }: KnowledgeCardProps) {
 
     return (
         <div className="relative group">
-            <Link
+            {/* <Link
                 href={`/knowledge/${knowledge.id}`}
                 className="absolute inset-0 z-10"
                 aria-label={`View details for ${knowledge.name}'s knowledge entry`}
-            />
-            <Card className="w-screen-[96vw] max-w-screen-xl relative transition-all duration-300 ease-in-out group-hover:bg-slate-200/10">
+            /> */}
+            {/* <Card className="w-screen-[96vw] max-w-screen-xl relative transition-all duration-300 ease-in-out group-hover:bg-slate-200/10"> */}
+            <Card className="w-screen-[96vw] max-w-screen-xl relative transition-all duration-300 ease-in-out">
                 <CardHeader>
                     <div className="flex">
                         <Avatar className="my-auto h-10 w-10 duration-200 hover:opacity-75">
