@@ -12,7 +12,7 @@ export default function Header() {
                         <AvatarImage src="/logo.webp" alt="logo" />
                         <AvatarFallback>Logo</AvatarFallback>
                     </Avatar>
-                    <h1 className="ml-4 my-auto font-black text-4xl text-sky-600 hidden md:block">Knowledge Nexus</h1>
+                    <h1 className="ml-4 my-auto font-black text-sm sm:text-base md:text-2xl lg:text-3xl text-sky-600">Knowledge Nexus</h1>
                 </Link>
             </div>
             <div className="ml-auto mr-2 flex space-x-2 my-auto">

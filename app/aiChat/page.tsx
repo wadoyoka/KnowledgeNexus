@@ -1,15 +1,16 @@
 "use client";
 
+import '@/app/styles/turnBack.css';
 import LoadingAnimation from '@/components/LoadingAnimation';
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
-import { ScrollArea } from "@/components/ui/scroll-area";
+import { ScrollArea, ScrollBar } from "@/components/ui/scroll-area";
 import { useChat } from "ai/react";
 import parse, { DOMNode, Element, HTMLReactParserOptions, domToReact } from 'html-react-parser';
 import DOMPurify from 'isomorphic-dompurify';
 import { Send } from 'lucide-react';
-import { useState } from 'react';
+import { useEffect, useRef, useState } from 'react';
 
 export default function Home() {
     const [isLoading, setIsLoading] = useState(false);
@@ -32,6 +33,22 @@ export default function Home() {
             setIsLoading(false);
         },
     });
+
+    const scrollAreaRef = useRef<HTMLDivElement>(null);
+
+    useEffect(() => {
+        // Add a small delay to ensure content is rendered
+        const timeoutId = setTimeout(() => {
+            if (scrollAreaRef.current) {
+                const scrollContainer = scrollAreaRef.current.querySelector('[data-radix-scroll-area-viewport]');
+                if (scrollContainer) {
+                    scrollContainer.scrollTop = scrollContainer.scrollHeight;
+                }
+            }
+        }, 10);
+
+        return () => clearTimeout(timeoutId);
+    }, [messages, isLoading]);
 
     const parseAndSanitize = (content: string) => {
         const sanitizedContent = DOMPurify.sanitize(content);
@@ -62,13 +79,13 @@ export default function Home() {
     };
 
     return (
-        <div className="relative w-full h-[93vh] overflow-hidden bg-slate-200">
-            <div className="absolute bottom-[70px] left-0 right-0 z-10 overflow-y-auto p-4">
-                <ScrollArea className="h-full">
+        <div className="flex flex-col h-[93vh] bg-slate-200">
+            <ScrollArea className="flex-1 px-4 pt-1 pb-20" ref={scrollAreaRef}>
+                <div className="space-y-4">
                     {messages.map((message) => (
                         <div
                             key={message.id}
-                            className={`flex items-end mb-4 ${message.role === 'assistant' ? 'justify-start' : 'justify-end'
+                            className={`flex items-end ${message.role === 'assistant' ? 'justify-start' : 'justify-end'
                                 }`}
                         >
                             {message.role === 'assistant' && (
@@ -78,7 +95,7 @@ export default function Home() {
                                 </Avatar>
                             )}
                             <div
-                                className={`max-w-[70%] p-3 rounded-2xl ${message.role === 'assistant'
+                                className={`text max-w-[70%] p-3 rounded-2xl ${message.role === 'assistant'
                                     ? 'bg-white text-gray-800 rounded-bl-none'
                                     : 'bg-blue-500 text-white rounded-br-none'
                                     }`}
@@ -88,7 +105,7 @@ export default function Home() {
                         </div>
                     ))}
                     {isLoading && (
-                        <div className="flex items-end mb-4 justify-start">
+                        <div className="flex items-end justify-start">
                             <Avatar className="w-8 h-8 mr-2">
                                 <AvatarImage src="/placeholder.svg" alt="AI" />
                                 <AvatarFallback>AI</AvatarFallback>
@@ -98,10 +115,11 @@ export default function Home() {
                             </div>
                         </div>
                     )}
-                </ScrollArea>
-            </div>
+                </div>
+                <ScrollBar />
+            </ScrollArea>
 
-            <div className="absolute bottom-0 left-0 right-0 z-20 p-4 bg-white bg-opacity-80">
+            <div className="fixed bottom-0 left-0 right-0 p-4 bg-white bg-opacity-80 shadow">
                 <form onSubmit={handleFormSubmit} className="flex items-center gap-2">
                     <Input
                         value={input}
