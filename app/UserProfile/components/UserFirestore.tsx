@@ -84,11 +84,17 @@ export default function UserFirestoreCollection() {
         return <p>Loading...</p>;
     }
 
+    const deleteKnowledge = (knowledgeId:string) => {
+        const newKnowledges = knowledges.filter((element) => element.id !=knowledgeId)
+        console.log(newKnowledges)
+        setKnowledges(newKnowledges);
+    }
+
     return (
         <div>
             {error && <span>Error: {error}</span>}
             {loading && <span>Loading...</span>}
-            <KnowledgeCards knowledges={knowledges} />
+            <KnowledgeCards knowledges={knowledges} deleteKnowledge={deleteKnowledge}/>
             {!isLastPage && (
                 <Button
                     onClick={handleLoadMore}

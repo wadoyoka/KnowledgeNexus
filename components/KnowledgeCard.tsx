@@ -7,9 +7,10 @@ import { Card, CardContent, CardHeader, CardTitle } from "./ui/card";
 
 interface KnowledgeCardProps {
     knowledge: Knowledge;
+    deleteKnowledge?:(knowledgeId: string) => void;
 }
 
-export default function KnowledgeCard({ knowledge }: KnowledgeCardProps) {
+export default function KnowledgeCard({ knowledge, deleteKnowledge}: KnowledgeCardProps) {
     const urlMap = new Map(Object.entries(knowledge.urls));
     const urls = Array.from(urlMap.entries());
 
@@ -37,7 +38,7 @@ export default function KnowledgeCard({ knowledge }: KnowledgeCardProps) {
                                     {JSTTimeDisplay(knowledge.createdAt)}
                                 </div>
                                 <div className="ml-2 my-auto z-20">
-                                    <DeleteContentEllipsisVertical contentId={knowledge.id} userId={knowledge.uid} />
+                                    <DeleteContentEllipsisVertical contentId={knowledge.id} userId={knowledge.uid} deleteKnowledge={deleteKnowledge}/>
                                 </div>
                             </div>
                         </CardTitle>

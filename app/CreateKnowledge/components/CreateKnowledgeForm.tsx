@@ -252,6 +252,8 @@ export default function CreateKnowledgeForm() {
       setIsLoading(false);
     }
   };
+
+
   return (
     <Card className="w-full max-w-md mx-auto ">
       <CardHeader>
@@ -283,10 +285,10 @@ export default function CreateKnowledgeForm() {
                         <span className="block truncate mr-auto">
                           {url === "" ? (
                             <p className="text-slate-400">
-                              https://example.com
+                              URLを登録しよう
                             </p>
                           ) : (
-                            `${url}`
+                            `${titles[index]}`
                           )}
                         </span>
                       </Button>
@@ -399,11 +401,10 @@ export default function CreateKnowledgeForm() {
               />
               <label
                 htmlFor="terms"
-                className={`${
-                  isSendSlack
+                className={`${isSendSlack
                     ? "font-bold text-lg text-sky-600"
                     : "leading-none peer-disabled:cursor-not-allowed peer-disabled:opacity-70 font-medium text-lg text-slate-400 font-bold text-lg text-sky-600"
-                }`}
+                  }`}
               >
                 Slackに通知する
               </label>

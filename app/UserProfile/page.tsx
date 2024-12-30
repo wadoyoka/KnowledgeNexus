@@ -1,9 +1,7 @@
-import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
 import { authOptions } from '@/lib/auth';
 import { getServerSession } from 'next-auth';
 import { redirect } from 'next/navigation';
-import UserFirestoreCollection from './components/UserFirestore';
-import UserProfile from './components/UserProfile';
+import UserProfileClient from './components/UserProfileClient';
 
 export default async function ProfilePage() {
     const session = await getServerSession(authOptions);
@@ -12,20 +10,7 @@ export default async function ProfilePage() {
     }
     return (
         <div className="min-h-screen bg-slate-200 flex flex-col py-12 px-2 sm:px-6 lg:px-8">
-            <Tabs defaultValue="profile" className="">
-                <TabsList>
-                    <TabsTrigger value="profile">プロフィール</TabsTrigger>
-                    <TabsTrigger value="knowledgePost">自分の投稿</TabsTrigger>
-                </TabsList>
-                <TabsContent value="profile" className='grow w-full'>
-                    <UserProfile session={session} />
-                </TabsContent>
-                <TabsContent value="knowledgePost" className='grow w-full'>
-                    <div>
-                        <UserFirestoreCollection/>
-                    </div>
-                </TabsContent>
-            </Tabs>
+            <UserProfileClient session={session} />
         </div>
     );
 }

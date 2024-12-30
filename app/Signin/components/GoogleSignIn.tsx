@@ -82,7 +82,7 @@ export default function GoogleSignIn() {
         {/* <p>岩井研究室の皆様ようこそ!!</p>
         <p className="text-slate-400">※@cps.im.dendai.ac.jpのドメインをお持ちの方のみいただけます。</p> */}
         <form onSubmit={signInWithGoogle} className="mt-32">
-          <SubmitButton preText={"Googleでログイン"} postText={"ログイン中"} disabled={isLogin} width="w-full" height="h-12" fontSize="text-xl" fontweight="font-bold" baseColor="bg-slate-50" baseTextColor="text-slate-600" icon={FcGoogle} iconSize={36} iconPosition="left"/>
+          <SubmitButton preText={"Googleでログイン"} postText={"ログイン中"} disabled={isLogin} width="w-full" height="h-12" fontSize="text-xl" fontweight="font-bold" baseColor="bg-slate-50" hoverColor="hover:bg-sky-800" baseTextColor="text-slate-600" icon={FcGoogle} iconSize={36} iconPosition="left"/>
         </form>
         {/* <Button
           onClick={signInWithGoogle}

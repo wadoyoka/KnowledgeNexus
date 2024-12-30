@@ -14,9 +14,10 @@ import { useState } from "react";
 interface DeleteContentEllipsisVerticalProps {
     contentId: string;
     userId: string;
+    deleteKnowledge?: (knowledgeId: string) => void;
 }
 
-export default function DeleteContentEllipsisVertical({ contentId, userId }: DeleteContentEllipsisVerticalProps) {
+export default function DeleteContentEllipsisVertical({ contentId, userId, deleteKnowledge }: DeleteContentEllipsisVerticalProps) {
     const { data: session, status } = useSession();
     const [isSubmitting, setIsSubmitting] = useState<boolean>(false);
     const router = useRouter();
@@ -31,6 +32,9 @@ export default function DeleteContentEllipsisVertical({ contentId, userId }: Del
         setIsSubmitting(true);
         try {
             const result = await deleteDocument("KnowledgeNexus", contentId);
+            if (deleteKnowledge) {
+                deleteKnowledge(contentId);
+            }
             if (result === true) {
                 setErrorMessage("");
                 router.refresh();

@@ -1,5 +1,6 @@
 'use client'
 
+import { Knowledge } from '@/types/KnowledgeResponse'
 import { Loader2, Search } from 'lucide-react'
 import { useState } from 'react'
 import { callCloudFunction } from '../utils/callCloudFunction'
@@ -9,7 +10,7 @@ import { Input } from './ui/input'
 
 export function SearchForm() {
   const [searchTerm, setSearchTerm] = useState('')
-  const [result, setResult] = useState([])
+  const [knowledges, setKnowledges] = useState<Knowledge[]>([]);
   const [error, setError] = useState<string | null>(null)
   const [isLoading, setIsLoading] = useState(false)
   const [target, setTarget] = useState<string>("");
@@ -17,7 +18,7 @@ export function SearchForm() {
 
   const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault()
-    setResult([])
+    setKnowledges([])
     setError(null)
 
     if (!searchTerm.trim()) {
@@ -32,7 +33,7 @@ export function SearchForm() {
       const response = await callCloudFunction(`${process.env.NEXT_PUBLIC_FIREBASE_CLOUD_VECTOR_SEARCH_FUNCTION}`, { target: searchTerm as string })
       if (response.success && response.data) {
         const data = JSON.parse(JSON.stringify(response))
-        setResult(JSON.parse(data.data.data))
+        setKnowledges(JSON.parse(data.data.data))
       } else {
         setError(response.error || '検索中にエラーが発生しました。')
       }
@@ -43,6 +44,13 @@ export function SearchForm() {
       setIsLoading(false);
     }
   }
+
+  const deleteKnowledge = (knowledgeId: string) => {
+    const newKnowledges = knowledges.filter((element) => element.id != knowledgeId)
+    console.log(newKnowledges)
+    setKnowledges(newKnowledges);
+  }
+
 
   return (
     <div className="w-screen-[96vw] max-w-screen-xl mx-auto mt-10">
@@ -71,11 +79,11 @@ export function SearchForm() {
           <p>{error}</p>
         </div>
       )}
-      {result && (
+      {knowledges && (
         <div className="mt-4 px-2">
           <h2 className="font-bold text-2xl mb-2">{target !== "" && `検索ワード：${target}`}</h2>
           {isLoading && <Loader2 className="mx-auto mt-4 w-12 h-12 md:h-24 md:w-24 animate-spin" />}
-          <KnowledgeCards knowledges={result} />
+          <KnowledgeCards knowledges={knowledges} deleteKnowledge={deleteKnowledge} />
         </div>
       )}
     </div>
