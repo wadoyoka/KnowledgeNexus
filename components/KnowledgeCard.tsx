@@ -69,7 +69,7 @@ export default function KnowledgeCard({ knowledge, deleteKnowledge }: KnowledgeC
                 </CardContent>
             </Card> */}
 
-            <div className="w-screen-[96vw] max-w-screen-xl mx-auto bg-white flex p-2 sm:rounded-md lg:rounded-lg shadow">
+            <div className="w-screen-[96vw] max-w-screen-2xl mx-auto bg-white flex p-2 sm:rounded-md lg:rounded-lg shadow">
                 {/* アイコン */}
                 <div>
                     <Avatar className="my-auto w-8 h-8 md:h-10 md:w-10 duration-200 hover:opacity-75">
@@ -88,7 +88,7 @@ export default function KnowledgeCard({ knowledge, deleteKnowledge }: KnowledgeC
                                 </div>
                                 <div className="ml-auto flex">
                                     <div className="my-auto text-sm md:text-base text-slate-400 font-light">
-                                        {JSTTimeDisplay(knowledge.createdAt)}
+                                        {JSTTimeDisplay(knowledge.updateAt)}
                                     </div>
                                     <div className="ml-4 z-20 flex text-slate-600">
                                         <DeleteContentEllipsisVertical contentId={knowledge.id} userId={knowledge.uid} deleteKnowledge={deleteKnowledge}/>

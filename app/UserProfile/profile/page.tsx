@@ -10,7 +10,9 @@ export default async function ProfilePage() {
     }
     return (
         <div className="min-h-screen bg-slate-200 flex flex-col py-12 md:px-2 sm:px-6 lg:px-8">
-            <UserProfileClient session={session} />
+            <div className='sm:w-full grow max-w-screen-2xl sm:mx-auto'>
+                <UserProfileClient session={session} />
+            </div>
         </div>
     );
 }

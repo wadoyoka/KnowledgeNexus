@@ -130,7 +130,7 @@ export default function UserProfile({ session }: UserProfileProps) {
                         value={username}
                         onChange={(e) => setUsername(e.target.value)}
                     />
-                    <SubmitButton preText={"変更する"} postText={"変更中"} disabled={isLoading} type="button" onClick={handleNameChange} width="w-36" />
+                    <SubmitButton preText={"変更する"} postText={"変更中"} disabled={isLoading} type="button" onClick={handleNameChange} width="w-36" height="h-9"/>
                 </div>
                 <p className="text-slate-400 mb-4">※ユーザー名を変更すると、一度ログアウトします。</p>
                 <h2 className="font-semibold">メールアドレス</h2>
