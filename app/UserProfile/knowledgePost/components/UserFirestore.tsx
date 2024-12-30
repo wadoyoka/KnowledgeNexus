@@ -3,7 +3,7 @@ import KnowledgeCards from '@/components/KnowledgeCards';
 import { Button } from "@/components/ui/button";
 import { firestore } from '@/lib/firebase';
 import { Knowledge } from '@/types/KnowledgeResponse';
-import { collection, DocumentData, getDocs, limit, query, QueryDocumentSnapshot, startAfter, where } from 'firebase/firestore';
+import { collection, DocumentData, getDocs, limit, orderBy, query, QueryDocumentSnapshot, startAfter, where } from 'firebase/firestore';
 import { Loader2 } from 'lucide-react';
 import { useSession } from 'next-auth/react';
 import { useEffect, useState } from 'react';
@@ -42,6 +42,7 @@ export default function UserFirestoreCollection() {
             let q = query(
                 collection(firestore, `${process.env.NEXT_PUBLIC_FIREBASE_CLOUD_FIRESTORE_DOCUMENT}`),
                 where("uid", "==", session.user.id),
+                orderBy("updateAt", "desc"),
                 limit(ITEMS_PER_PAGE)
             );
 
