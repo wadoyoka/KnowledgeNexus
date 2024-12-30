@@ -78,7 +78,7 @@ export default function GoogleSignIn() {
           <AvatarImage src="/logodata/logo.webp" alt="Logo" className='p-1' />
           <AvatarFallback>Logo</AvatarFallback>
         </Avatar>
-        <h1 className="text-2xl font-bold mb-4 text-center text-3xl md:text-5xl mt-24">KnowledgeNexus</h1>
+        <h1 className="text-2xl font-bold mb-4 text-center text-3xl md:text-5xl mt-24 text-sky-600">KnowledgeNexus</h1>
         {/* <p>岩井研究室の皆様ようこそ!!</p>
         <p className="text-slate-400">※@cps.im.dendai.ac.jpのドメインをお持ちの方のみいただけます。</p> */}
         <form onSubmit={signInWithGoogle} className="mt-32">
