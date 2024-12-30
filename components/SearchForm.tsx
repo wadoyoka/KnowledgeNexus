@@ -86,7 +86,7 @@ export function SearchForm() {
       {/* 検索結果 */}
       {(knowledges.length !== 0 || isLoading) ?
         <div className="mt-4 md:px-2">
-          <h2 className="font-bold text-2xl max-md:ml-2 mb-2">{target !== "" && `検索ワード：${target}`}</h2>
+          <h2 className="font-bold text-2xl max-md:ml-2 mb-6">{target !== "" && `検索ワード：${target}`}</h2>
           {isLoading && <Loader2 className="mx-auto mt-4 w-12 h-12 md:h-24 md:w-24 animate-spin" />}
           <KnowledgeCards knowledges={knowledges} deleteKnowledge={deleteKnowledge} />
         </div>

@@ -69,7 +69,7 @@ export default function KnowledgeCard({ knowledge, deleteKnowledge }: KnowledgeC
                 </CardContent>
             </Card> */}
 
-            <div className="w-screen-[96vw] max-w-screen-xl mx-auto bg-white flex p-2 md:rounded-md lg:rounded-lg">
+            <div className="w-screen-[96vw] max-w-screen-xl mx-auto bg-white flex p-2 sm:rounded-md lg:rounded-lg shadow">
                 {/* アイコン */}
                 <div>
                     <Avatar className="my-auto w-8 h-8 md:h-10 md:w-10 duration-200 hover:opacity-75">
