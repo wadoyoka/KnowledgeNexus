@@ -53,9 +53,10 @@ export function SearchForm() {
 
 
   return (
-    <div className="w-screen-[96vw] max-w-screen-xl mx-auto mt-10">
+    <div className="w-full md:w-screen-[96vw] max-w-screen-xl mx-auto mt-10">
+      {/* 検索窓 */}
       <form onSubmit={handleSubmit} className="mb-4">
-        <div className="flex w-full max-w-7xl gap-2">
+        <div className="flex w-full max-w-7xl px-2">
           <div className="relative flex-1">
             <Search className="absolute left-3 top-1/2 md:h-8 md:w-8 -translate-y-1/2 text-muted-foreground" />
             <Input
@@ -79,9 +80,12 @@ export function SearchForm() {
           <p>{error}</p>
         </div>
       )}
+
+
+      {/* 検索結果 */}
       {knowledges && (
-        <div className="mt-4 px-2">
-          <h2 className="font-bold text-2xl mb-2">{target !== "" && `検索ワード：${target}`}</h2>
+        <div className="mt-4 md:px-2">
+          <h2 className="font-bold text-2xl max-md:ml-2 mb-2">{target !== "" && `検索ワード：${target}`}</h2>
           {isLoading && <Loader2 className="mx-auto mt-4 w-12 h-12 md:h-24 md:w-24 animate-spin" />}
           <KnowledgeCards knowledges={knowledges} deleteKnowledge={deleteKnowledge} />
         </div>

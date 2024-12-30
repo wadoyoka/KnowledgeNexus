@@ -9,7 +9,7 @@ export default async function ProfilePage() {
         redirect("/Signin?callbackUrl=UserProfile")
     }
     return (
-        <div className="min-h-screen bg-slate-200 flex flex-col py-12 px-2 sm:px-6 lg:px-8">
+        <div className="min-h-screen bg-slate-200 flex flex-col py-12 md:px-2 sm:px-6 lg:px-8">
             <UserProfileClient session={session} />
         </div>
     );

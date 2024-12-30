@@ -60,8 +60,8 @@ export default function DeleteContentEllipsisVertical({ contentId, userId, delet
 
         <DropdownMenu>
             <DropdownMenuTrigger asChild>
-                <button className="rounded-full hover:bg-gray-400">
-                    <EllipsisVertical />
+                <button>
+                    <EllipsisVertical className="rounded-full hover:bg-gray-400 duration-200 w-4 h-4 md:w-6 md:h-6"/>
                 </button>
             </DropdownMenuTrigger>
             <DropdownMenuContent side="left" align="start">
