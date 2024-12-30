@@ -78,6 +78,7 @@ export default function UserFirestoreCollection() {
         if (session?.user?.id) {
             fetchKnowledges();
         }
+        // eslint-disable-next-line react-hooks/exhaustive-deps
     }, [session]);
 
     const handleLoadMore = () => {
@@ -98,7 +99,7 @@ export default function UserFirestoreCollection() {
 
     return (
         <div>
-            <KnowledgeCards knowledges={knowledges} deleteKnowledge={deleteKnowledge}/>
+            <KnowledgeCards knowledges={knowledges} deleteKnowledge={deleteKnowledge} />
             {!isLastPage && (
                 <Button
                     onClick={handleLoadMore}

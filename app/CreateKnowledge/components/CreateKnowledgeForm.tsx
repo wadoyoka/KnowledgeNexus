@@ -6,8 +6,7 @@ import { useToast } from "@/hooks/use-toast";
 import { callCloudFunction } from "@/utils/callCloudFunction";
 import { Loader2, Plus, X } from "lucide-react";
 import { useSession } from "next-auth/react";
-import { usePathname } from "next/navigation";
-import router from "next/router";
+import { usePathname, useRouter } from "next/navigation";
 import { useState } from "react";
 import * as z from "zod";
 import SubmitButton from "../../../components/Buttons/SubmitButton/SubmitButton";
@@ -31,9 +30,11 @@ export default function CreateKnowledgeForm() {
   const [bufUrls, setBufUrls] = useState<string[]>([""]);
   const [titles, setTitles] = useState<string[]>([""]);
   const [bufTitles, setBufTitles] = useState<string[]>([""]);
+  const [message, setMessage] = useState('')
   const [isSendSlack, setIsSendSlack] = useState<boolean>(true);
   const [errorMessage, setErrorMessage] = useState<string>();
   const pathname = usePathname();
+  const router = useRouter();
   const { data: session, status } = useSession();
   if (status !== "authenticated") {
     return <div className="w-full h-full flex my-auto items-center"><Loader2 className="mx-auto mt-4 w-12 h-12 md:h-24 md:w-24 animate-spin" /></div>;
@@ -170,14 +171,13 @@ export default function CreateKnowledgeForm() {
         UrlWithTitleMap.set(urls[index], titles[index]);
       }
       const keyValue = Object.fromEntries(UrlWithTitleMap);
-      const formData = new FormData(event.currentTarget);
       const validatedData = knowledgeSchema.parse({
         uid: session.user.id,
         name: session.user.name,
         email: session.user.email,
         image: session.user.image,
         bufUrls: urls,
-        message: formData.get("message"),
+        message: message,
       });
       // const data = {
       //   uid: validatedData.uid,
@@ -249,7 +249,7 @@ export default function CreateKnowledgeForm() {
       });
     } finally {
       setIsLoading(false);
-      router.push('UserProfile/knowledgePost');
+      router.push('/UserProfile/knowledgePost');
     }
   };
 
@@ -553,7 +553,8 @@ export default function CreateKnowledgeForm() {
           </div>
           <div className="space-y-2">
             <Label htmlFor="message" className="text-lg font-semibold">メモ内容</Label>
-            <Textarea id="message" name="message" rows={10} required  className="bg-white"/>
+            <Textarea id="message" name="message" rows={10} required  value={message}
+              onChange={(e) => setMessage(e.target.value)} className="bg-white"/>
           </div>
           <div className="space-y-2">
             <div className="flex items-center space-x-2">
