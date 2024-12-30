@@ -192,7 +192,7 @@ export default function UpdateKnowledgeForm({ initialKnowledge }: UpdateKnowledg
       if (result.success) {
         toast({
           title: "更新成功",
-          description: "知識が正常に更新されました。",
+          description: "ナレッジが正常に更新されました。",
         })
         router.push('/UserProfile')
       } else {

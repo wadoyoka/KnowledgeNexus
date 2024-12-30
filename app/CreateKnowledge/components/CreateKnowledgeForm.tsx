@@ -204,8 +204,8 @@ export default function CreateKnowledgeForm() {
         throw new Error(result.error);
       }
       toast({
-        title: "送信成功",
-        description: "メッセージが正常に送信されました。",
+        title: "登録成功",
+        description: "ナレッジが登録されました。",
       });
       // Slack通知
       if (isSendSlack) {
@@ -250,6 +250,7 @@ export default function CreateKnowledgeForm() {
       });
     } finally {
       setIsLoading(false);
+      router.push('UserProfile/knowledgePost');
     }
   };
 
@@ -411,8 +412,8 @@ export default function CreateKnowledgeForm() {
             </div>
           </div>
           <SubmitButton
-            preText={"送信"}
-            postText={"送信中"}
+            preText={"登録"}
+            postText={"登録中"}
             disabled={isLoading}
             width="w-full"
           />

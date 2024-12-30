@@ -1,8 +1,7 @@
 'use client';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { Session } from "next-auth";
-import { useRouter, useSearchParams } from "next/navigation";
-import UserFirestoreCollection from "./UserFirestore";
+import { useRouter } from "next/navigation";
 import UserProfile from "./UserProfile";
 
 interface UserProfileClientProps {
@@ -11,27 +10,20 @@ interface UserProfileClientProps {
 
 
 export default function UserProfileClient({ session }: UserProfileClientProps) {
-    const searchParams = useSearchParams();
-    const target = searchParams.get('target');
     const router = useRouter();
 
     function changeTab(target: string) {
-        router.push(`/UserProfile?target=${target}`)
+        router.push(`/UserProfile/${target}`)
     }
 
     return (
-        <Tabs defaultValue={`${target}`} className="">
-            <TabsList>
+        <Tabs defaultValue="profile" className="">
+            <TabsList className="ml-2 mb-6">
                 <TabsTrigger value="profile" onClick={() => changeTab('profile')}>プロフィール</TabsTrigger>
                 <TabsTrigger value="knowledgePost" onClick={() => changeTab('knowledgePost')}>自分の投稿</TabsTrigger>
             </TabsList>
             <TabsContent value="profile" className='grow w-full'>
                 <UserProfile session={session} />
-            </TabsContent>
-            <TabsContent value="knowledgePost" className='grow w-full'>
-                <div>
-                    <UserFirestoreCollection />
-                </div>
             </TabsContent>
         </Tabs>
     )

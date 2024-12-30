@@ -24,7 +24,7 @@ export default function HeaderAvatar() {
 
     function handleUserProfile(target: string) {
         setIsOpen(false);
-        router.push(`/UserProfile?target=${target}`);
+        router.push(`/UserProfile/${target}`);
     }
 
 

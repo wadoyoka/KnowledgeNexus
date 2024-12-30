@@ -5,6 +5,7 @@ import { Loader2, Search } from 'lucide-react'
 import { useState } from 'react'
 import { callCloudFunction } from '../utils/callCloudFunction'
 import KnowledgeCards from './KnowledgeCards'
+import { Avatar, AvatarFallback, AvatarImage } from './ui/avatar'
 import { Input } from './ui/input'
 
 
@@ -68,7 +69,7 @@ export function SearchForm() {
               onChange={(e) => setSearchTerm(e.target.value)}
             />
           </div>
-          <div className='my-auto'>
+          <div className='my-auto md:ml-4'>
             <button type='submit' className='font-extrabold text-xl bg-sky-500 text-white w-24 h-12 md:h-16 rounded-lg hidden md:block duration-200 hover:bg-sky-700'>
               {isLoading ? <p>検索中</p> : <p>検索</p>}
             </button>
@@ -83,13 +84,24 @@ export function SearchForm() {
 
 
       {/* 検索結果 */}
-      {knowledges && (
+      {(knowledges.length !== 0 || isLoading) ?
         <div className="mt-4 md:px-2">
           <h2 className="font-bold text-2xl max-md:ml-2 mb-2">{target !== "" && `検索ワード：${target}`}</h2>
           {isLoading && <Loader2 className="mx-auto mt-4 w-12 h-12 md:h-24 md:w-24 animate-spin" />}
           <KnowledgeCards knowledges={knowledges} deleteKnowledge={deleteKnowledge} />
         </div>
-      )}
+
+        :
+        <div className='flex flex-col items-center justify-center min-h-[65vh]'>
+          <Avatar className="w-32 h-32 md:w-48 md:h-48 mx-auto animate-spin-slow">
+            <AvatarImage src="/logodata/logo_BlackColor.webp" alt="Logo" className='p-1 opacity-30' />
+            <AvatarFallback>Logo</AvatarFallback>
+          </Avatar>
+          <h2 className='font-semibold text-slate-600 mt-4'>データベースを検索しましょう!!</h2>
+        </div>
+      }
+
+
     </div>
   )
 }

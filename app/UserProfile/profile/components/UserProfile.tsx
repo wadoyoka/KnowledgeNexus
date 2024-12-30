@@ -95,7 +95,7 @@ export default function UserProfile({ session }: UserProfileProps) {
     }
 
     return (
-        <div className="flex max-md:flex-col mt-4">
+        <div className="flex max-md:flex-col mt-4 p-2">
             <div>
                 <input
                     type="file"
@@ -135,7 +135,7 @@ export default function UserProfile({ session }: UserProfileProps) {
                 <p className="text-slate-400 mb-4">※ユーザー名を変更すると、一度ログアウトします。</p>
                 <h2 className="font-semibold">メールアドレス</h2>
                 <p>{session.user.email}</p>
-                <Button variant="destructive" onClick={() => router.push("/DeleteAccount")} className="mt-12">アカウント削除</Button>
+                <Button variant="destructive" onClick={() => router.push("/DeleteAccount")} className="mt-6">アカウント削除</Button>
                 {error && (
                     <Alert variant="destructive" className="mt-4">
                         <AlertCircle className="h-4 w-4" />
