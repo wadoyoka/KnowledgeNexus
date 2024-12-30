@@ -1,15 +1,9 @@
 'use client';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
-import { Session } from "next-auth";
 import { useRouter } from "next/navigation";
 import UserFirestoreCollection from "./UserFirestore";
 
-interface UserProfileClientProps {
-    session: Session;
-}
-
-
-export default function UserProfileClient({ session }: UserProfileClientProps) {
+export default function UserProfileClient() {
     const router = useRouter();
 
     function changeTab(target: string) {
@@ -30,3 +24,4 @@ export default function UserProfileClient({ session }: UserProfileClientProps) {
         </Tabs>
     )
 }
+

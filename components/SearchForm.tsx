@@ -97,7 +97,7 @@ export function SearchForm() {
             <AvatarImage src="/logodata/logo_BlackColor.webp" alt="Logo" className='p-1 opacity-30' />
             <AvatarFallback>Logo</AvatarFallback>
           </Avatar>
-          <h2 className='font-semibold text-slate-600 mt-4'>データベースを検索しましょう!!</h2>
+          <h2 className='font-semibold text-slate-600 mt-4'>ナレッジを検索しましょう!!</h2>
         </div>
       }
 

@@ -4,10 +4,13 @@ import { Button } from "@/components/ui/button";
 import { firestore } from '@/lib/firebase';
 import { Knowledge } from '@/types/KnowledgeResponse';
 import { collection, DocumentData, getDocs, limit, query, QueryDocumentSnapshot, startAfter, where } from 'firebase/firestore';
+import { Loader2 } from 'lucide-react';
 import { useSession } from 'next-auth/react';
 import { useEffect, useState } from 'react';
 
 const ITEMS_PER_PAGE = 10;
+
+
 
 export default function UserFirestoreCollection() {
     const { data: session, status } = useSession();
@@ -72,28 +75,29 @@ export default function UserFirestoreCollection() {
     };
 
     useEffect(() => {
-        fetchKnowledges();
-        // eslint-disable-next-line react-hooks/exhaustive-deps
-    }, []);
+        if (session?.user?.id) {
+            fetchKnowledges();
+        }
+    }, [session]);
 
     const handleLoadMore = () => {
         fetchKnowledges(true);
     };
 
-    if (status === "loading") {
-        return <p>Loading...</p>;
+    if (status === "loading" || loading) {
+        return <div className='min-h-screen'><div className="w-full h-full flex my-auto items-center"><Loader2 className="mx-auto mt-4 w-12 h-12 md:h-24 md:w-24 animate-spin" /></div></div>;
     }
 
-    const deleteKnowledge = (knowledgeId:string) => {
-        const newKnowledges = knowledges.filter((element) => element.id !=knowledgeId)
-        console.log(newKnowledges)
-        setKnowledges(newKnowledges);
+    if (error) {
+        return <div className="text-red-500">{error}</div>;
     }
+
+    const deleteKnowledge = (knowledgeId: string) => {
+        setKnowledges(prevKnowledges => prevKnowledges.filter(element => element.id !== knowledgeId));
+    };
 
     return (
         <div>
-            {error && <span>Error: {error}</span>}
-            {loading && <span>Loading...</span>}
             <KnowledgeCards knowledges={knowledges} deleteKnowledge={deleteKnowledge}/>
             {!isLastPage && (
                 <Button
