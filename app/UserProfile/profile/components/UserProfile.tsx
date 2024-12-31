@@ -95,7 +95,7 @@ export default function UserProfile({ session }: UserProfileProps) {
     }
 
     return (
-        <div className="flex max-md:flex-col mt-4">
+        <div className="flex max-md:flex-col mt-4 p-2">
             <div>
                 <input
                     type="file"
@@ -107,10 +107,10 @@ export default function UserProfile({ session }: UserProfileProps) {
                 <button
                     onClick={handleButtonClick}
                     disabled={isUploading}
-                    className="text-slate-400 duration-200 hover:text-slate-700"
+                    className="text-slate-400 duration-200 group hover:text-slate-700"
                 >
-                    <div className="text-slate-400 duration-200 hover:text-slate-700">
-                        <Avatar className="w-24 h-24">
+                    <div className="text-slate-700 duration-200 group-hover:text-slate-400">
+                        <Avatar className="w-24 h-24 group-hover:opacity-50 duration-200">
                             <AvatarImage src={profileImageUrl} alt={session.user.email} />
                             <AvatarFallback>Icon</AvatarFallback>
                         </Avatar>
@@ -119,8 +119,8 @@ export default function UserProfile({ session }: UserProfileProps) {
                 </button>
             </div>
             <div className="grow ml-4">
-                <h2 className="font-semibold">ユーザー名</h2>
-                <div className="flex">
+                <h2 className="font-semibold max-md:mt-1">ユーザー名</h2>
+                <div className="flex max-w-screen-xl">
                     <Input
                         className="bg-white border-2 mr-2"
                         id="username"
@@ -130,12 +130,12 @@ export default function UserProfile({ session }: UserProfileProps) {
                         value={username}
                         onChange={(e) => setUsername(e.target.value)}
                     />
-                    <SubmitButton preText={"変更する"} postText={"変更中"} disabled={isLoading} type="button" onClick={handleNameChange} />
+                    <SubmitButton preText={"変更する"} postText={"変更中"} disabled={isLoading} type="button" onClick={handleNameChange} width="w-36" height="h-9"/>
                 </div>
+                <p className="text-slate-400 mb-4">※ユーザー名を変更すると、一度ログアウトします。</p>
                 <h2 className="font-semibold">メールアドレス</h2>
                 <p>{session.user.email}</p>
-                <Button variant="destructive" onClick={() => router.push("/DeleteAccount")}>アカウント削除</Button>
-                <p className="text-slate-400">※ユーザー名を変更すると、一度ログアウトします。</p>
+                <Button variant="destructive" onClick={() => router.push("/DeleteAccount")} className="mt-6">アカウント削除</Button>
                 {error && (
                     <Alert variant="destructive" className="mt-4">
                         <AlertCircle className="h-4 w-4" />

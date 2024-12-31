@@ -31,8 +31,7 @@ export default function UpdateKnowledgePage() {
     }
 
     return (
-        <div className="container mx-auto py-8">
-            <h1 className="text-2xl font-bold mb-4">Update Knowledge</h1>
+        <div className="min-h-screen md:p-4 bg-slate-200 flex">
             <UpdateKnowledgeForm initialKnowledge={knowledge} />
         </div>
     );

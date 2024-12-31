@@ -2,7 +2,7 @@ import CreateKnowledgeForm from "@/app/CreateKnowledge/components/CreateKnowledg
 
 export default function Home() {
     return (
-        <div className="min-h-screen md:p-4 bg-slate-200 flex items-center">
+        <div className="min-h-screen md:p-4 bg-slate-200 flex">
             <CreateKnowledgeForm />
         </div>
     )

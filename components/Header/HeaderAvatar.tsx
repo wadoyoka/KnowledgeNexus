@@ -1,6 +1,6 @@
 'use client';
 import { handleSignOut } from "@/utils/userSignOut";
-import { LogOut, User } from "lucide-react";
+import { FileText, LogOut, User } from "lucide-react";
 import { useSession } from "next-auth/react";
 import { usePathname, useRouter } from "next/navigation";
 import { useState } from "react";
@@ -22,9 +22,9 @@ export default function HeaderAvatar() {
         router.push(`/Signin?callbackUrl=${pathname}`);
     }
 
-    const handleUserProfile = () =>{
+    function handleUserProfile(target: string) {
         setIsOpen(false);
-        router.push("/UserProfile");
+        router.push(`/UserProfile/${target}`);
     }
 
 
@@ -37,10 +37,16 @@ export default function HeaderAvatar() {
                 </Avatar>
             </DropdownMenuTrigger>
             <DropdownMenuContent side="bottom" className="mr-10">
-                <DropdownMenuItem onSelect={handleUserProfile}>
+                <DropdownMenuItem onSelect={() => handleUserProfile("profile")}>
                     <div className="flex my-auto">
                         <User />
                         <span className="ml-2">プロフィール</span>
+                    </div>
+                </DropdownMenuItem>
+                <DropdownMenuItem onSelect={() => handleUserProfile("knowledgePost")}>
+                    <div className="flex my-auto">
+                        <FileText />
+                        <span className="ml-2">自分の投稿</span>
                     </div>
                 </DropdownMenuItem>
                 <DropdownMenuItem onSelect={() => {

@@ -16,7 +16,7 @@ export async function POST(request: Request) {
     .map(([url, title]) => `<${url}|${title}>`)
     .join("\n");
 
-  const slackMessage = `新しい知識が登録されました:
+  const slackMessage = `新しいナレッジが登録されました:
 ユーザー: ${username}
 メモ内容: ${message}
 URLとタイトル: ${formattedUrls} `;

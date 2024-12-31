@@ -14,9 +14,10 @@ import { useState } from "react";
 interface DeleteContentEllipsisVerticalProps {
     contentId: string;
     userId: string;
+    deleteKnowledge?: (knowledgeId: string) => void;
 }
 
-export default function DeleteContentEllipsisVertical({ contentId, userId }: DeleteContentEllipsisVerticalProps) {
+export default function DeleteContentEllipsisVertical({ contentId, userId, deleteKnowledge }: DeleteContentEllipsisVerticalProps) {
     const { data: session, status } = useSession();
     const [isSubmitting, setIsSubmitting] = useState<boolean>(false);
     const router = useRouter();
@@ -31,6 +32,9 @@ export default function DeleteContentEllipsisVertical({ contentId, userId }: Del
         setIsSubmitting(true);
         try {
             const result = await deleteDocument("KnowledgeNexus", contentId);
+            if (deleteKnowledge) {
+                deleteKnowledge(contentId);
+            }
             if (result === true) {
                 setErrorMessage("");
                 router.refresh();
@@ -56,8 +60,8 @@ export default function DeleteContentEllipsisVertical({ contentId, userId }: Del
 
         <DropdownMenu>
             <DropdownMenuTrigger asChild>
-                <button className="rounded-full hover:bg-gray-400">
-                    <EllipsisVertical />
+                <button>
+                    <EllipsisVertical className="rounded-full hover:bg-gray-400 duration-200 w-4 h-4 md:w-6 md:h-6"/>
                 </button>
             </DropdownMenuTrigger>
             <DropdownMenuContent side="left" align="start">

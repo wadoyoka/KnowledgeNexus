@@ -1,14 +1,12 @@
 "use client";
-import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Textarea } from "@/components/ui/textarea";
 import { useToast } from "@/hooks/use-toast";
 import { callCloudFunction } from "@/utils/callCloudFunction";
-import { Plus, X } from "lucide-react";
+import { Loader2, Plus, X } from "lucide-react";
 import { useSession } from "next-auth/react";
-import { usePathname } from "next/navigation";
-import router from "next/router";
+import { usePathname, useRouter } from "next/navigation";
 import { useState } from "react";
 import * as z from "zod";
 import SubmitButton from "../../../components/Buttons/SubmitButton/SubmitButton";
@@ -32,12 +30,14 @@ export default function CreateKnowledgeForm() {
   const [bufUrls, setBufUrls] = useState<string[]>([""]);
   const [titles, setTitles] = useState<string[]>([""]);
   const [bufTitles, setBufTitles] = useState<string[]>([""]);
+  const [message, setMessage] = useState('')
   const [isSendSlack, setIsSendSlack] = useState<boolean>(true);
   const [errorMessage, setErrorMessage] = useState<string>();
   const pathname = usePathname();
+  const router = useRouter();
   const { data: session, status } = useSession();
   if (status !== "authenticated") {
-    return <p>Loadng...</p>;
+    return <div className="w-full h-full flex my-auto items-center"><Loader2 className="mx-auto mt-4 w-12 h-12 md:h-24 md:w-24 animate-spin" /></div>;
   }
   if (!session) {
     router.push(`/Signin?callbackUrl=${pathname}`);
@@ -171,14 +171,13 @@ export default function CreateKnowledgeForm() {
         UrlWithTitleMap.set(urls[index], titles[index]);
       }
       const keyValue = Object.fromEntries(UrlWithTitleMap);
-      const formData = new FormData(event.currentTarget);
       const validatedData = knowledgeSchema.parse({
         uid: session.user.id,
         name: session.user.name,
         email: session.user.email,
         image: session.user.image,
         bufUrls: urls,
-        message: formData.get("message"),
+        message: message,
       });
       // const data = {
       //   uid: validatedData.uid,
@@ -204,8 +203,8 @@ export default function CreateKnowledgeForm() {
         throw new Error(result.error);
       }
       toast({
-        title: "送信成功",
-        description: "メッセージが正常に送信されました。",
+        title: "登録成功",
+        description: "ナレッジが登録されました。",
       });
       // Slack通知
       if (isSendSlack) {
@@ -250,20 +249,188 @@ export default function CreateKnowledgeForm() {
       });
     } finally {
       setIsLoading(false);
+      router.push('/UserProfile/knowledgePost');
     }
   };
+
+
   return (
-    <Card className="w-full max-w-md mx-auto ">
-      <CardHeader>
+    // <Card className="w-full max-w-md mx-auto ">
+    //   <CardHeader>
+    //     <div className="flex">
+    //       <CreateKnowledgeAvatar />
+    //       <CardTitle className="ml-4 my-auto">{session.user.name}</CardTitle>
+    //     </div>
+    //   </CardHeader>
+    //   <CardContent>
+    //     <form onSubmit={handleSubmit} className="space-y-4">
+    //       <div className="space-y-2 flex flex-col">
+    //         <Label htmlFor="email">URL</Label>
+    //         <p className="text-red-600">{errorMessage && errorMessage}</p>
+    //         {urls.map((url, index) => (
+    //           <div
+    //             key={`URL_${index}`}
+    //             className="block grid grid-cols-7 gap-2"
+    //           >
+    //             <div className={urls.length > 1 ? "col-span-6" : "col-span-7"}>
+    //               <Dialog>
+    //                 <DialogTrigger asChild>
+    //                   <Button
+    //                     variant="outline"
+    //                     className="w-full"
+    //                     onClick={() => {
+    //                       handleInitializeBufData(index);
+    //                     }}
+    //                   >
+    //                     <span className="block truncate mr-auto">
+    //                       {url === "" ? (
+    //                         <p className="text-slate-400">
+    //                           URLを登録しよう
+    //                         </p>
+    //                       ) : (
+    //                         `${titles[index]}`
+    //                       )}
+    //                     </span>
+    //                   </Button>
+    //                 </DialogTrigger>
+    //                 <DialogContent className="sm:max-w-[425px]">
+    //                   <DialogHeader>
+    //                     <DialogTitle>URLの編集</DialogTitle>
+    //                     <DialogDescription>
+    //                       URLとURLのタイトルを入力してください。
+    //                     </DialogDescription>
+    //                   </DialogHeader>
+    //                   <div className="grid gap-4 py-4">
+    //                     <div className="grid grid-cols-6 items-center gap-4">
+    //                       <Label htmlFor="name" className="text-right">
+    //                         URL
+    //                       </Label>
+    //                       <Input
+    //                         id={`Url_${index}`}
+    //                         placeholder="https://example.com"
+    //                         type="url"
+    //                         className="col-span-5"
+    //                         value={bufUrls[index]}
+    //                         onChange={(e) =>
+    //                           handleChangeBufUrl(e.target.value, index)
+    //                         }
+    //                         required
+    //                       />
+    //                     </div>
+    //                     <div className="grid grid-cols-6 items-center gap-4">
+    //                       <Label htmlFor="username" className="text-right">
+    //                         Title
+    //                       </Label>
+    //                       <Input
+    //                         id={`Url_Title_${index}`}
+    //                         placeholder="タイトル"
+    //                         className="col-span-5"
+    //                         value={bufTitles[index]}
+    //                         onChange={(e) =>
+    //                           handleChangeBufTitle(e.target.value, index)
+    //                         }
+    //                       />
+    //                     </div>
+    //                   </div>
+    //                   <DialogFooter className="flex">
+    //                     <div className="flex ml-auto gap-2">
+    //                       <DialogClose asChild>
+    //                         <div>
+    //                           <Button type="button" variant="outline">
+    //                             キャンセル
+    //                           </Button>
+    //                           <Button
+    //                             type="button"
+    //                             className="ml-2"
+    //                             onClick={() => {
+    //                               handleAddUrlwithTitle(
+    //                                 bufUrls[index],
+    //                                 bufTitles[index],
+    //                                 index
+    //                               );
+    //                             }}
+    //                           >
+    //                             保存
+    //                           </Button>
+    //                         </div>
+    //                       </DialogClose>
+    //                     </div>
+    //                   </DialogFooter>
+    //                 </DialogContent>
+    //               </Dialog>
+    //             </div>
+    //             {urls.length > 1 && (
+    //               <div className="ml-auro">
+    //                 <Button
+    //                   variant={"ghost"}
+    //                   size={"icon"}
+    //                   type="button"
+    //                   className="hover:text-red-500"
+    //                   onClick={() => {
+    //                     removeUrlField(url);
+    //                   }}
+    //                 >
+    //                   <X />
+    //                 </Button>
+    //               </div>
+    //             )}
+    //           </div>
+    //         ))}
+    //         <Button
+    //           type="button"
+    //           variant={"ghost"}
+    //           onClick={addUrlField}
+    //           className="flex mx-auto my-2 bg-slate-100 w-full hover:text-sky-400"
+    //         >
+    //           <Plus />
+    //         </Button>
+    //       </div>
+    //       <div className="space-y-2">
+    //         <Label htmlFor="message">メモ内容</Label>
+    //         <Textarea id="message" name="message" rows={10} required />
+    //       </div>
+    //       <div className="space-y-2">
+    //         <div className="flex items-center space-x-2">
+    //           <Checkbox
+    //             id="terms"
+    //             checked={isSendSlack}
+    //             onCheckedChange={() => {
+    //               setIsSendSlack((prev) => !prev);
+    //             }}
+    //             className={`data-[state=checked]:bg-sky-600 data-[state=checked]:text-white`}
+    //           />
+    //           <label
+    //             htmlFor="terms"
+    //             className={`${isSendSlack
+    //                 ? "font-bold text-lg text-sky-600"
+    //                 : "leading-none peer-disabled:cursor-not-allowed peer-disabled:opacity-70 font-medium text-lg text-slate-400 font-bold text-lg text-sky-600"
+    //               }`}
+    //           >
+    //             Slackに通知する
+    //           </label>
+    //         </div>
+    //       </div>
+    //       <SubmitButton
+    //         preText={"登録"}
+    //         postText={"登録中"}
+    //         disabled={isLoading}
+    //         width="w-full"
+    //       />
+    //     </form>
+    //   </CardContent>
+    // </Card>
+
+    <div className="w-full max-w-screen-2xl mx-auto p-4">
+      <div>
         <div className="flex">
           <CreateKnowledgeAvatar />
-          <CardTitle className="ml-4 my-auto">{session.user.name}</CardTitle>
+          <div className="ml-4 my-auto text-xl font-bold">{session.user.name}</div>
         </div>
-      </CardHeader>
-      <CardContent>
+      </div>
+      <div className="mt-2">
         <form onSubmit={handleSubmit} className="space-y-4">
           <div className="space-y-2 flex flex-col">
-            <Label htmlFor="email">URL</Label>
+            <Label htmlFor="email" className="text-lg font-semibold">URL</Label>
             <p className="text-red-600">{errorMessage && errorMessage}</p>
             {urls.map((url, index) => (
               <div
@@ -283,40 +450,40 @@ export default function CreateKnowledgeForm() {
                         <span className="block truncate mr-auto">
                           {url === "" ? (
                             <p className="text-slate-400">
-                              https://example.com
+                              URLを登録しよう
                             </p>
                           ) : (
-                            `${url}`
+                            `${titles[index]}`
                           )}
                         </span>
                       </Button>
                     </DialogTrigger>
-                    <DialogContent className="sm:max-w-[425px]">
+                    <DialogContent className="sm:max-w-[80vw] xl:max-w-[60vw]">
                       <DialogHeader>
                         <DialogTitle>URLの編集</DialogTitle>
                         <DialogDescription>
                           URLとURLのタイトルを入力してください。
                         </DialogDescription>
                       </DialogHeader>
-                      <div className="grid gap-4 py-4">
-                        <div className="grid grid-cols-6 items-center gap-4">
-                          <Label htmlFor="name" className="text-right">
+                      <div className="flex flex-col space-y-6">
+                        <div className="flex space-x-2">
+                          <Label htmlFor="name" className="text-right my-auto">
                             URL
                           </Label>
                           <Input
                             id={`Url_${index}`}
                             placeholder="https://example.com"
                             type="url"
-                            className="col-span-5"
                             value={bufUrls[index]}
                             onChange={(e) =>
                               handleChangeBufUrl(e.target.value, index)
                             }
+                            autoComplete="off"
                             required
                           />
                         </div>
-                        <div className="grid grid-cols-6 items-center gap-4">
-                          <Label htmlFor="username" className="text-right">
+                        <div className="flex space-x-2">
+                          <Label htmlFor="username" className="text-right my-auto">
                             Title
                           </Label>
                           <Input
@@ -327,6 +494,7 @@ export default function CreateKnowledgeForm() {
                             onChange={(e) =>
                               handleChangeBufTitle(e.target.value, index)
                             }
+                            autoComplete="off"
                           />
                         </div>
                       </div>
@@ -339,7 +507,7 @@ export default function CreateKnowledgeForm() {
                               </Button>
                               <Button
                                 type="button"
-                                className="ml-2"
+                                className="ml-2 bg-sky-500 hover:bg-sky-600"
                                 onClick={() => {
                                   handleAddUrlwithTitle(
                                     bufUrls[index],
@@ -378,14 +546,15 @@ export default function CreateKnowledgeForm() {
               type="button"
               variant={"ghost"}
               onClick={addUrlField}
-              className="flex mx-auto my-2 bg-slate-100 w-full hover:text-sky-400"
+              className="flex mx-auto my-2 bg-slate-50 w-full text-slate-600 hover:text-sky-500"
             >
-              <Plus />
+              <Plus/>
             </Button>
           </div>
           <div className="space-y-2">
-            <Label htmlFor="message">メモ内容</Label>
-            <Textarea id="message" name="message" rows={10} required />
+            <Label htmlFor="message" className="text-lg font-semibold">メモ内容</Label>
+            <Textarea id="message" name="message" rows={10} required  value={message}
+              onChange={(e) => setMessage(e.target.value)} className="bg-white"/>
           </div>
           <div className="space-y-2">
             <div className="flex items-center space-x-2">
@@ -399,24 +568,23 @@ export default function CreateKnowledgeForm() {
               />
               <label
                 htmlFor="terms"
-                className={`${
-                  isSendSlack
-                    ? "font-bold text-lg text-sky-600"
-                    : "leading-none peer-disabled:cursor-not-allowed peer-disabled:opacity-70 font-medium text-lg text-slate-400 font-bold text-lg text-sky-600"
-                }`}
+                className={`${isSendSlack
+                  ? "font-bold text-lg text-sky-600"
+                  : "leading-none peer-disabled:cursor-not-allowed peer-disabled:opacity-70 font-medium text-lg text-slate-400 font-bold text-lg text-sky-600"
+                  }`}
               >
                 Slackに通知する
               </label>
             </div>
           </div>
           <SubmitButton
-            preText={"送信"}
-            postText={"送信中"}
+            preText={"登録"}
+            postText={"登録中"}
             disabled={isLoading}
             width="w-full"
           />
         </form>
-      </CardContent>
-    </Card>
+      </div>
+    </div>
   );
 }
