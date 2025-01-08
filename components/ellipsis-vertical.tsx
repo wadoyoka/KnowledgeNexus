@@ -9,6 +9,7 @@ import { EllipsisVertical, PenTool, Trash2 } from "lucide-react";
 import { useSession } from "next-auth/react";
 import { useRouter } from "next/navigation";
 import { useState } from "react";
+import { Drawer, DrawerClose, DrawerContent, DrawerDescription, DrawerFooter, DrawerHeader, DrawerTitle, DrawerTrigger } from "./ui/drawer";
 
 
 interface DeleteContentEllipsisVerticalProps {
@@ -57,48 +58,109 @@ export default function DeleteContentEllipsisVertical({ contentId, userId, delet
     }
 
     return (
+        <div>
+            <div className="hidden md:block">
+                <DropdownMenu>
+                    <DropdownMenuTrigger asChild>
+                        <button>
+                            <EllipsisVertical className="rounded-full hover:bg-gray-400 duration-200 w-4 h-4 md:w-6 md:h-6" />
+                        </button>
+                    </DropdownMenuTrigger>
+                    <DropdownMenuContent side="left" align="start">
+                        <DropdownMenuItem onClick={() => setIsDialogOpen(true)}>
+                            <Trash2 className="mr-2 h-4 w-4" />
+                            <span>削除</span>
+                        </DropdownMenuItem>
+                        <DropdownMenuItem onClick={() => router.push(`/UpdateKnowledge/${contentId}`)}>
+                            <PenTool className="mr-2 h-4 w-4" />
+                            <span>編集</span>
+                        </DropdownMenuItem>
+                    </DropdownMenuContent>
 
-        <DropdownMenu>
-            <DropdownMenuTrigger asChild>
-                <button>
-                    <EllipsisVertical className="rounded-full hover:bg-gray-400 duration-200 w-4 h-4 md:w-6 md:h-6"/>
-                </button>
-            </DropdownMenuTrigger>
-            <DropdownMenuContent side="left" align="start">
-                <DropdownMenuItem onClick={() => setIsDialogOpen(true)}>
-                    <Trash2 className="mr-2 h-4 w-4" />
-                    <span>削除</span>
-                </DropdownMenuItem>
-                <DropdownMenuItem onClick={() => router.push(`/UpdateKnowledge/${contentId}`)}>
-                    <PenTool className="mr-2 h-4 w-4" />
-                    <span>編集</span>
-                </DropdownMenuItem>
-            </DropdownMenuContent>
 
+                    <Dialog open={isDialogOpen} onOpenChange={setIsDialogOpen}>
+                        <DialogContent>
+                            <DialogHeader>
+                                <DialogTitle>投稿削除確認</DialogTitle>
+                            </DialogHeader>
+                            <DialogDescription>
+                                投稿を削除しても良いかの確認です。
+                                {errorMessage && <p className="text-red-500 mt-2">{errorMessage.toString()}</p>}
+                            </DialogDescription>
+                            <DialogFooter className="flex">
+                                <div className="flex ml-auto gap-2">
+                                    <DialogClose asChild>
+                                        <Button type="button" variant="secondary">
+                                            キャンセル
+                                        </Button>
+                                    </DialogClose>
+                                    <form onSubmit={deleteContentWithId}>
+                                        <SubmitButton preText="削除" postText="削除中..." disabled={isSubmitting} />
+                                    </form>
+                                </div>
+                            </DialogFooter>
+                        </DialogContent>
+                    </Dialog>
+                </DropdownMenu>
+            </div>
 
-            <Dialog open={isDialogOpen} onOpenChange={setIsDialogOpen}>
-                <DialogContent>
-                    <DialogHeader>
-                        <DialogTitle>投稿削除確認</DialogTitle>
-                    </DialogHeader>
-                    <DialogDescription>
-                        投稿を削除しても良いかの確認です。
-                        {errorMessage && <p className="text-red-500 mt-2">{errorMessage.toString()}</p>}
-                    </DialogDescription>
-                    <DialogFooter className="flex">
-                        <div className="flex ml-auto gap-2">
-                            <DialogClose asChild>
-                                <Button type="button" variant="secondary">
-                                    キャンセル
-                                </Button>
-                            </DialogClose>
-                            <form onSubmit={deleteContentWithId}>
-                                <SubmitButton preText="削除" postText="削除中..." disabled={isSubmitting} />
-                            </form>
-                        </div>
-                    </DialogFooter>
-                </DialogContent>
-            </Dialog>
-        </DropdownMenu>
+            <div className="block md:hidden">
+                <Drawer>
+                    <DrawerTrigger asChild>
+                        <button>
+                            <EllipsisVertical className="rounded-full hover:bg-gray-400 duration-200 w-4 h-4 md:w-6 md:h-6" />
+                        </button>
+                    </DrawerTrigger>
+                    <DrawerContent>
+                        <DrawerHeader className="sr-only">
+                            <DrawerTitle className="sr-only">投稿・削除or編集メニュー</DrawerTitle>
+                            <DrawerDescription className="sr-only">これは、自分の投稿を削除か編集するためのサブメニューです</DrawerDescription>
+                        </DrawerHeader>
+                        <DrawerFooter>
+                            <DrawerClose asChild>
+                                <div className="w-full flex flex-col">
+                                    <button className="p-2 duration-200 hover:bg-accent" onClick={() => setIsDialogOpen(true)}>
+                                        <div className="flex mr-auto">
+                                            <Trash2 className="mr-6 h-6 w-6" />
+                                            <span className="text-xl">削除</span>
+                                        </div>
+                                    </button>
+                                    <button className="p-2 duration-200 hover:bg-accent" onClick={() => router.push(`/UpdateKnowledge/${contentId}`)}>
+                                        <div className="flex mr-auto">
+                                            <PenTool className="mr-6 h-6 w-6" />
+                                            <span className="text-xl">編集</span>
+                                        </div>
+                                    </button>
+                                </div>
+                            </DrawerClose>
+                        </DrawerFooter>
+                    </DrawerContent>
+
+                    <Dialog open={isDialogOpen} onOpenChange={setIsDialogOpen}>
+                        <DialogContent>
+                            <DialogHeader>
+                                <DialogTitle>投稿削除確認</DialogTitle>
+                            </DialogHeader>
+                            <DialogDescription>
+                                投稿を削除しても良いかの確認です。
+                                {errorMessage && <p className="text-red-500 mt-2">{errorMessage.toString()}</p>}
+                            </DialogDescription>
+                            <DialogFooter className="flex">
+                                <div className="flex ml-auto gap-2">
+                                    <DialogClose asChild>
+                                        <Button type="button" variant="secondary">
+                                            キャンセル
+                                        </Button>
+                                    </DialogClose>
+                                    <form onSubmit={deleteContentWithId}>
+                                        <SubmitButton preText="削除" postText="削除中..." disabled={isSubmitting} />
+                                    </form>
+                                </div>
+                            </DialogFooter>
+                        </DialogContent>
+                    </Dialog>
+                </Drawer>
+            </div>
+        </div>
     )
 }
