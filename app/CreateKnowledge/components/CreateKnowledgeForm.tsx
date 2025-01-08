@@ -458,7 +458,7 @@ export default function CreateKnowledgeForm() {
                         </span>
                       </Button>
                     </DialogTrigger>
-                    <DialogContent className="sm:max-w-[80vw] xl:max-w-[60vw]">
+                    <DialogContent className="sm:max-w-[80vw] xl:max-w-[60vw] top-4 translate-y-6">
                       <DialogHeader>
                         <DialogTitle>URLの編集</DialogTitle>
                         <DialogDescription>

@@ -114,7 +114,7 @@ export default function KnowledgeCard({ knowledge, deleteKnowledge }: KnowledgeC
                             ))}
                         </ul>
                         <div className='text'>
-                            {knowledge.text_field}
+                            <p className='text'>{knowledge.text_field}</p>
                         </div>
                     </div>
                 </div>

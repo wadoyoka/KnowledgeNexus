@@ -18,6 +18,7 @@ export function SearchForm() {
 
 
   const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
+    e.currentTarget.blur();
     e.preventDefault()
     setKnowledges([])
     setError(null)
