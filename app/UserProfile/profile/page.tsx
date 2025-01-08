@@ -1,5 +1,6 @@
 import { authOptions } from '@/lib/auth';
 import { getServerSession } from 'next-auth';
+import UserProfileClient from '../components/UserProfile_CommonClient';
 import UserProfile from './components/UserProfile';
 
 export default async function ProfilePage() {
@@ -9,8 +10,10 @@ export default async function ProfilePage() {
     }
 
     return (
-        <div>
-            <UserProfile session={session} />
-        </div>
+        <UserProfileClient>
+            <div>
+                <UserProfile session={session} />
+            </div>
+        </UserProfileClient>
     );
 }

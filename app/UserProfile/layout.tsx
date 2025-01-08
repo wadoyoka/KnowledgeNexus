@@ -1,6 +1,5 @@
 import { Loader2 } from 'lucide-react';
 import { Suspense } from "react";
-import UserProfileClient from "./components/UserProfile_CommonClient";
 
 export default function RootLayout({
     children,
@@ -17,7 +16,7 @@ export default function RootLayout({
                         </div>
                     </div>
                 }>
-                    <UserProfileClient>{children}</UserProfileClient>
+                    {children}
                 </Suspense>
             </div>
         </div>

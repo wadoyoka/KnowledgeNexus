@@ -1,8 +1,11 @@
+import UserProfileClient from '../components/UserProfile_CommonClient';
 import UserFirestoreCollection from './components/UserFirestore';
 
 export default function ProfilePage() {
     return (
-        <UserFirestoreCollection />
+        <UserProfileClient>
+            <UserFirestoreCollection />
+        </UserProfileClient>
     );
 }
 
