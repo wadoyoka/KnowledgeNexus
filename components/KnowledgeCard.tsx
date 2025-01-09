@@ -113,8 +113,8 @@ export default function KnowledgeCard({ knowledge, deleteKnowledge }: KnowledgeC
                                 </li>
                             ))}
                         </ul>
-                        <div className='text'>
-                            <p className='text'>{knowledge.text_field}</p>
+                        <div className='text_turnBack'>
+                            <p className='text_turnBack text_Line_Break'>{knowledge.text_field}</p>
                         </div>
                     </div>
                 </div>
