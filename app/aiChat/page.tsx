@@ -95,7 +95,7 @@ export default function Home() {
                                 </Avatar>
                             )}
                             <div
-                                className={`text max-w-[70%] p-3 rounded-2xl ${message.role === 'assistant'
+                                className={`text_turnBack max-w-[70%] p-3 rounded-2xl ${message.role === 'assistant'
                                     ? 'bg-white text-gray-800 rounded-bl-none'
                                     : 'bg-blue-500 text-white rounded-br-none'
                                     }`}

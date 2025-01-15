@@ -11,7 +11,12 @@ export async function POST(req: Request) {
     let docContext = "";
 
     try {
-        const response = await callCloudFunction(`${process.env.NEXT_PUBLIC_FIREBASE_CLOUD_VECTOR_SEARCH_FUNCTION}`, { target: latestMessage as string })
+        const response = await callCloudFunction(`${process.env.NEXT_PUBLIC_FIREBASE_CLOUD_VECTOR_SEARCH_FUNCTION}`,
+            {
+                target: latestMessage as string,
+                searchLimit: 5,
+            }
+        );
         if (response.success && response.data) {
             const data = JSON.parse(JSON.stringify(response))
             // setResult(JSON.parse(data.data.data))
@@ -22,7 +27,7 @@ export async function POST(req: Request) {
                 const urlMap = new Map(Object.entries(Knowledge.urls));
                 const urls = Array.from(urlMap.entries());
                 for await (const url of urls) {
-                    urlData += "URL:"+url[0]+"URLDescription:"+url[1] +" "
+                    urlData += "URL:" + url[0] + "URLDescription:" + url[1] + " "
                 }
 
                 docContext += Knowledge.text_field + " " + "関連URL:" + urlData + " ";

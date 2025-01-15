@@ -31,7 +31,11 @@ export function SearchForm() {
     console.log(`${process.env.NEXT_PUBLIC_FIREBASE_CLOUD_VECTOR_SEARCH_FUNCTION}`)
     try {
       setTarget(searchTerm);
-      const response = await callCloudFunction(`${process.env.NEXT_PUBLIC_FIREBASE_CLOUD_VECTOR_SEARCH_FUNCTION}`, { target: searchTerm as string })
+      const response = await callCloudFunction(`${process.env.NEXT_PUBLIC_FIREBASE_CLOUD_VECTOR_SEARCH_FUNCTION}`, 
+        { target: searchTerm as string,
+          searchLimit: 20,
+        }
+      );
       if (response.success && response.data) {
         const data = JSON.parse(JSON.stringify(response))
         setKnowledges(JSON.parse(data.data.data))
